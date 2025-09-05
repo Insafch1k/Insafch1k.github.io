@@ -1,0 +1,149 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f0f7ff;
+}
+
+header {
+  background-color: #2d80f0;
+  color: white;
+  padding: 5px 0vw;
+  padding-left: calc(50vw - 550px);
+  font-size: 20px;
+  font-weight: 600;
+  text-align: left;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 30px auto;
+  padding: 0 20px;
+}
+
+/* Блок "Новая задача" */
+.new-task {
+  width: 40%;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: fadeIn 0.8s ease;
+}
+
+.new-task label {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.input-container input {
+  flex: 1;
+  padding: 10px 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.input-container button {
+  background: #2d80f0;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.input-container button:hover {
+  background: #1a5ec9;
+  transform: scale(1.05);
+}
+
+/* Колонки */
+.columns {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  animation: fadeInUp 0.8s ease;
+}
+
+.column h3 {
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 16px;
+  display: inline-block;
+}
+
+.backlog h3 { background: #ddd; }
+.inprogress h3 { background: #cce4ff; color: #1565c0; }
+.done h3 { background: #d6f5d6; color: #2e7d32; }
+.trash h3 { background: #f8d7da; color: #b71c1c; }
+
+/* Карточки задач */
+.task {
+  background: white;
+  padding: 10px 15px;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  font-size: 15px;
+  cursor: default;
+  transition: transform 0.2s, box-shadow 0.3s;
+  animation: fadeInUp 0.6s ease;
+}
+
+.task:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Кнопка очистки */
+.trash button {
+  margin-top: 10px;
+  padding: 10px;
+  background: #d9534f;
+  border: none;
+  color: white;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.trash button:hover {
+  background: #b52a27;
+  transform: scale(1.05);
+}
+
+/* Анимации*/
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { 
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ахметзянов Инсаф 4321-21</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Список задач</h1>
+    </header>
+
+    <main class="container">
+        <section class="new-task">
+            <label for="task">Новая задача</label>
+            <div class="input-container">
+                <input type="text" id="task" placeholder="Название задачи...">
+                <button>+ Добавить</button>
+            </div>
+        </section>
+
+        <section class="columns">
+            <article class="column backlog">
+                <h3>Бэклог</h3>
+                <div class="task">Выучить JS</div>
+                <div class="task">Выучить React</div>
+                <div class="task">Сделать домашку</div>
+            </article>
+
+            <article class="column inprogress">
+                <h3>В процессе</h3>
+                <div class="task">Выпить смузи</div>
+                <div class="task">Попить воды</div>
+            </article>
+
+            <article class="column done">
+                <h3>Готово</h3>
+                <div class="task">Позвонить маме</div>
+                <div class="task">Погладить кота</div>
+            </article>
+
+            <article class="column trash">
+                <h3>Корзина</h3>
+                <div class="task">Сходить погулять</div>
+                <div class="task">Прочитать Войну и Мир</div>
+                <button>✖ Очистить</button>
+            </article>
+        </section>
+    </main>
+</body>
+</html>
