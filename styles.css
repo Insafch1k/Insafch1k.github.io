@@ -44,6 +44,12 @@ body.board-app {
     margin-bottom: 16px;
 }
 
+.add-task input {
+    border: 1px solid;
+    border-radius: 15px;
+    padding: 10px;
+}
+
 .add-task__form {
     display: flex;
     flex-direction: column;
