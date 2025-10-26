@@ -1,9 +1,9 @@
 import BoardComponent from "../view/board-component.js";
 import TaskListComponent from "../view/task-list-component.js";
 import TaskComponent from "../view/task-component.js";
+import EmptyListComponent from "../view/empty-list-component.js";
 import { render } from "../framework/render.js";
 import { TASK_STATUS } from "../const.js";
-import EmptyListComponent from "../view/empty-list-component.js";
 
 export default class TasksBoardPresenter {
   #boardContainer = null;
@@ -13,16 +13,24 @@ export default class TasksBoardPresenter {
   constructor({ boardContainer, tasksModel }) {
     this.#boardContainer = boardContainer;
     this.#tasksModel = tasksModel;
+
+    this.#tasksModel.addObserver(this.#handleModelEvent.bind(this));
   }
 
   init() {
-    render(this.#boardComponent, this.#boardContainer);
-    Object.values(TASK_STATUS).forEach((status) => {
-      this.#renderTasksList(status);
-    });
+    this.#renderBoard();
   }
 
-  // Отрисовка списка задач
+  #renderBoard() {
+    this.#clearBoard();
+    render(this.#boardComponent, this.#boardContainer);
+    Object.values(TASK_STATUS).forEach((status) => this.#renderTasksList(status));
+  }
+
+  #clearBoard() {
+    this.#boardComponent.element.innerHTML = "";
+  }
+
   #renderTasksList(status) {
     const taskListComponent = new TaskListComponent(status.title, status.className);
     render(taskListComponent, this.#boardComponent.element);
@@ -41,23 +49,33 @@ export default class TasksBoardPresenter {
     }
   }
 
-  // Отдельный метод для рендера задачи
   #renderTask(container, task) {
     const taskComponent = new TaskComponent(task);
     render(taskComponent, container.element);
   }
 
-  // Рендер пустого списка
   #renderEmptyList(container) {
     const emptyListComponent = new EmptyListComponent();
     render(emptyListComponent, container.element);
   }
 
-  // Рендер кнопки очистки
   #renderClearButton(container) {
     const clearButton = document.createElement("button");
     clearButton.textContent = "✖ Очистить";
     clearButton.classList.add("clear-button");
+    clearButton.addEventListener("click", () => {
+      this.#tasksModel.clearTrash();
+      clearButton.disabled = true;
+    });
     container.element.append(clearButton);
+  }
+
+  #handleModelEvent(eventType) {
+    switch (eventType) {
+      case "task-added":
+      case "trash-cleared":
+        this.#renderBoard();
+        break;
+    }
   }
 }
