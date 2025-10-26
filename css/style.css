@@ -147,3 +147,19 @@ header {
     transform: translateY(0);
   }
 }
+.column.drop-hover {
+  background-color: #e3f2fd;
+  transition: background-color 0.3s;
+}
+
+.task.drop-before {
+  border-top: 3px solid #2d80f0;
+}
+
+.task.drop-after {
+  border-bottom: 3px solid #2d80f0;
+}
+
+.column.drop-hover-end {
+  background-color: #f1f8ff;
+}
