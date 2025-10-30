@@ -112,8 +112,6 @@ body.board-app {
 
 .task-list__title {
     align-self: flex-start;
-    background: #3b82f6;
-    color: #ffffff;
     padding: 6px 12px;
     border-radius: 6px;
     font-size: 1rem;
@@ -137,9 +135,59 @@ body.board-app {
 .task-item {
 
     background-color: #ffffff;
-    border-left: 3px solid #3b82f6;
     padding: 10px;
     border-radius: 6px;
     font-family: 'Inter';
 
+}
+
+.task-list__title--backlog {
+    background-color: #bdbdbd;
+    color: #585858;
+}
+
+.task-list__title--processing {
+    background-color: #5eb6ff;
+    color: #182af5;
+}
+
+.task-list__title--done {
+    background-color: #81fe7b;
+    color: #13dc16;
+}
+
+.task-list__title--basket {
+    background-color: #ff6161;
+    color: #c71111;
+}
+
+.task-item--backlog {
+    border-left: 3px solid #585858;
+}
+
+.task-item--processing {
+    border-left: 3px solid #182af5;
+}
+
+.task-item--done {
+    border-left: 3px solid #13dc16;
+}
+
+.task-item--basket {
+    border-left: 3px solid #c71111;
+}
+
+.clear-basket {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #fc9696;
+    color: #ac3535;
+    border: 0 solid;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.clear-basket span {
+    color: #000;
+    margin: 0 0 0 10px;
 }

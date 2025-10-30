@@ -1,16 +1,34 @@
 import {createElement} from '../framework/render.js';
+import { StatusLabel } from '../const.js';
 
-function createTaskItemComponentTemplate() {
-  return (
-    `<div class="task-item">
-      <h3 class="task-item__title">Название первой задачи</h3>
-    </div>`
-  );
+function createTaskItemComponentTemplate(task) {
+
+  const {title, status} = task;
+    return (
+      `
+      <div class="task-item task-item--${status}">
+        <p class="task-item__title">${title}</p>
+      </div>
+      `
+    );
 }
 
+// `<div class="task-item task task--${status}"
+// <div class="task-item-body">
+// <p class="task-item__title">${title}</p>
+// <input type="text" class="task--input" />
+// </div>
+// <button aria-label="Изменить" class="task-item__edit" type="button"></button>
+// </div>`
+
 export default class TaskItemComponent {
+
+  constructor ({task}) {
+    this.task = task;
+  }
+
   getTemplate() {
-    return createTaskItemComponentTemplate();
+    return createTaskItemComponentTemplate(this.task);
   }
 
 
