@@ -4,11 +4,13 @@ import TaskComponent from "../view/task-component.js";
 import EmptyListComponent from "../view/empty-list-component.js";
 import { render } from "../framework/render.js";
 import { TASK_STATUS } from "../const.js";
+import LoadingComponent from "../view/loading-component.js";
 
 export default class TasksBoardPresenter {
   #boardContainer = null;
   #tasksModel = null;
   #boardComponent = new BoardComponent();
+  #loadingComponent = new LoadingComponent();
 
   #currentDrop = { listEl: null, targetId: null, position: null };
 
@@ -18,23 +20,25 @@ export default class TasksBoardPresenter {
 
     this.#tasksModel.addObserver(this.#handleModelEvent.bind(this));
 
-  
-    this.#boardContainer.addEventListener('dragstart', this.#onDragStart.bind(this));
-  
-    this.#boardContainer.addEventListener('dragover', this.#onDragOver.bind(this));
-    this.#boardContainer.addEventListener('dragleave', this.#onDragLeave.bind(this));
-    this.#boardContainer.addEventListener('drop', this.#onDrop.bind(this));
+    this.#boardContainer.addEventListener("dragstart", this.#onDragStart.bind(this));
+    this.#boardContainer.addEventListener("dragover", this.#onDragOver.bind(this));
+    this.#boardContainer.addEventListener("dragleave", this.#onDragLeave.bind(this));
+    this.#boardContainer.addEventListener("drop", this.#onDrop.bind(this));
   }
 
-  init() {
+  async init() {
+    render(this.#loadingComponent, this.#boardContainer);
+    await this.#tasksModel.init();
+    this.#clearBoard();
+    this.#loadingComponent.element.remove();
     this.#renderBoard();
   }
+
 
   #renderBoard() {
     this.#clearBoard();
     render(this.#boardComponent, this.#boardContainer);
     Object.values(TASK_STATUS).forEach((status) => this.#renderTasksList(status));
-  
   }
 
   #clearBoard() {
@@ -75,12 +79,13 @@ export default class TasksBoardPresenter {
     const clearButton = document.createElement("button");
     clearButton.textContent = "✖ Очистить";
     clearButton.classList.add("clear-button");
-    clearButton.addEventListener("click", () => {
-      this.#tasksModel.clearTrash();
+    clearButton.addEventListener("click", async () => {
       clearButton.disabled = true;
+      await this.#tasksModel.clearTrash();
     });
     container.element.append(clearButton);
   }
+
 
   #handleModelEvent(eventType) {
     switch (eventType) {
@@ -88,36 +93,37 @@ export default class TasksBoardPresenter {
       case "task-updated":
       case "task-moved":
       case "trash-cleared":
+      case "ADD_TASK":
+      case "UPDATE_TASK":
+      case "DELETE_TASK":
         this.#renderBoard();
         break;
     }
   }
 
-  #handleDropTask(taskId, newStatus, targetTaskId = null, position = null) {
-
-    this.#tasksModel.moveTask(taskId, newStatus, targetTaskId, position);
+  #handleDropTask(taskId, newStatus) {
+    this.#tasksModel.updateTaskStatus(taskId, newStatus);
   }
 
   #onDragStart(evt) {
-    const taskEl = evt.target.closest('.task');
+    const taskEl = evt.target.closest(".task");
     if (!taskEl) return;
-    evt.dataTransfer.setData('text/plain', taskEl.dataset.id);
-    evt.dataTransfer.effectAllowed = 'move';
+    evt.dataTransfer.setData("text/plain", taskEl.dataset.id);
+    evt.dataTransfer.effectAllowed = "move";
   }
 
- 
   #onDragOver(evt) {
-    const listEl = evt.target.closest('.column'); 
+    const listEl = evt.target.closest(".column");
     if (!listEl) return;
 
-    evt.preventDefault(); 
+    evt.preventDefault();
 
-    const taskEl = evt.target.closest('.task');
+    const taskEl = evt.target.closest(".task");
 
     if (taskEl && listEl.contains(taskEl)) {
       const rect = taskEl.getBoundingClientRect();
       const middleY = rect.top + rect.height / 2;
-      const position = (evt.clientY < middleY) ? 'before' : 'after';
+      const position = evt.clientY < middleY ? "before" : "after";
 
       this.#currentDrop = {
         listEl,
@@ -126,22 +132,20 @@ export default class TasksBoardPresenter {
       };
 
       this.#clearDropHints();
-      taskEl.classList.add(position === 'before' ? 'drop-before' : 'drop-after');
-
+      taskEl.classList.add(position === "before" ? "drop-before" : "drop-after");
     } else {
       this.#currentDrop = {
         listEl,
         targetId: null,
-        position: null
+        position: null,
       };
       this.#clearDropHints();
-      listEl.classList.add('drop-hover-end');
+      listEl.classList.add("drop-hover-end");
     }
   }
 
   #onDragLeave(evt) {
-
-    const listEl = evt.target.closest('.column');
+    const listEl = evt.target.closest(".column");
     if (!listEl) return;
     if (!listEl.contains(evt.relatedTarget)) {
       this.#clearDropHints();
@@ -150,30 +154,28 @@ export default class TasksBoardPresenter {
   }
 
   #onDrop(evt) {
-    const listEl = evt.target.closest('.column');
+    const listEl = evt.target.closest(".column");
     if (!listEl) return;
 
     evt.preventDefault();
 
-    const draggedId = evt.dataTransfer.getData('text/plain');
+    const draggedId = evt.dataTransfer.getData("text/plain");
     if (!draggedId) return;
 
     const newStatus = listEl.dataset.status;
 
-    const { targetId, position } = this.#currentDrop || {};
-
-    this.#handleDropTask(draggedId, newStatus, targetId, position);
+    this.#handleDropTask(draggedId, newStatus);
 
     this.#clearDropHints();
     this.#currentDrop = { listEl: null, targetId: null, position: null };
   }
 
   #clearDropHints() {
-    const before = this.#boardContainer.querySelectorAll('.drop-before');
-    before.forEach((el) => el.classList.remove('drop-before'));
-    const after = this.#boardContainer.querySelectorAll('.drop-after');
-    after.forEach((el) => el.classList.remove('drop-after'));
-    const ends = this.#boardContainer.querySelectorAll('.drop-hover-end');
-    ends.forEach((el) => el.classList.remove('drop-hover-end'));
+    const before = this.#boardContainer.querySelectorAll(".drop-before");
+    before.forEach((el) => el.classList.remove("drop-before"));
+    const after = this.#boardContainer.querySelectorAll(".drop-after");
+    after.forEach((el) => el.classList.remove("drop-after"));
+    const ends = this.#boardContainer.querySelectorAll(".drop-hover-end");
+    ends.forEach((el) => el.classList.remove("drop-hover-end"));
   }
 }

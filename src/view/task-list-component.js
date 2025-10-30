@@ -26,7 +26,7 @@ export default class TaskListComponent extends AbstractComponent {
     const element = this.element;
 
     element.addEventListener("dragover", (evt) => {
-      evt.preventDefault(); // разрешаем сброс
+      evt.preventDefault();
       element.classList.add("drop-hover");
     });
 

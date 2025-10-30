@@ -20,7 +20,6 @@ header {
   padding: 0 20px;
 }
 
-/* Блок "Новая задача" */
 .new-task {
   width: 40%;
   background: white;
@@ -69,7 +68,6 @@ header {
   transform: scale(1.05);
 }
 
-/* Колонки */
 .columns {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -96,7 +94,6 @@ header {
 .done h3 { background: #d6f5d6; color: #2e7d32; }
 .trash h3 { background: #f8d7da; color: #b71c1c; }
 
-/* Карточки задач */
 .task {
   background: white;
   padding: 10px 15px;
@@ -113,7 +110,6 @@ header {
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
-/* Кнопка очистки */
 .trash button {
   margin-top: 10px;
   padding: 10px;
@@ -131,7 +127,6 @@ header {
   transform: scale(1.05);
 }
 
-/* Анимации*/
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -162,4 +157,27 @@ header {
 
 .column.drop-hover-end {
   background-color: #f1f8ff;
+}
+
+.loading {
+  text-align: center;
+  font-size: 20px;
+  color: #2d80f0;
+  margin: 30px 0;
+}
+
+.task.new-task-anim {
+  animation: fadeSlideIn 0.4s ease-out;
+  background-color: #e6ffe6; 
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

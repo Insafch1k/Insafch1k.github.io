@@ -16,12 +16,25 @@ export default class TaskComponent extends AbstractComponent {
     return createTaskComponentTemplate(this.#task);
   }
 
+  getElement() {
+    if (!this.element) {
+      this.element = super.getElement();
+      if (this.#task.isNew) {
+        this.element.classList.add("new-task-anim");
+
+        setTimeout(() => {
+          this.element.classList.remove("new-task-anim");
+        }, 800);
+      }
+    }
+
+    return this.element;
+  }
+
   setDragHandlers() {
     this.element.addEventListener("dragstart", (evt) => {
       evt.dataTransfer.setData("text/plain", this.#task.id);
       evt.dataTransfer.effectAllowed = "move";
     });
   }
-
-  
 }
