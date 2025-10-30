@@ -12,18 +12,18 @@ const boardContainer = document.querySelector('.taskboard');
 render(new HeaderComponent(), bodyContainer, RenderPosition.BEFOREBEGIN);
 render(new FormAddTaskComponent(), formContainer);
 
-const board = new TaskBoardComponent();
-render(board, boardContainer);
-
-const listsWrapper = board.getElement().querySelector('.taskboard__lists');
+const taskBoard = new TaskBoardComponent();
+render(taskBoard, boardContainer);
 
 for (let i = 0; i < 4; i++) {
-    const list = new TaskListComponent(i + 1);
-    render(list, listsWrapper);
+
+  const taskList = new TaskListComponent();
+  render(taskList, taskBoard.getElement());
+
   
-    const itemsWrapper = list.getElement().querySelector('.task-list__items');
-  
-    for (let j = 0; j < 4; j++) {
-      render(new TaskItemComponent(`Название первой задачи`), itemsWrapper);
-    }
+  for (let j = 0; j < 4; j++) {
+    const taskItem = new TaskItemComponent();
+    render(taskItem, taskList.getElement().querySelector('.task-list__items')); 
+  }
+
 }

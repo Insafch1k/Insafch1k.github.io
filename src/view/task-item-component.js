@@ -1,28 +1,28 @@
 import {createElement} from '../framework/render.js';
 
-function createTaskItemComponentTemplate(title = 'Название первой задачи') {
+function createTaskItemComponentTemplate() {
   return (
-    `<section class="task-card">
-      <h4 class="task-card__title">${title}</h4>
-    </section>`
+    `<div class="task-item">
+      <h3 class="task-item__title">Название первой задачи</h3>
+    </div>`
   );
 }
 
 export default class TaskItemComponent {
-  constructor(title) {
-    this.title = title;
+  getTemplate() {
+    return createTaskItemComponentTemplate();
   }
 
-  getTemplate() {
-    return createTaskItemComponentTemplate(this.title);
-  }
 
   getElement() {
     if (!this.element) {
       this.element = createElement(this.getTemplate());
     }
+
+
     return this.element;
   }
+
 
   removeElement() {
     this.element = null;

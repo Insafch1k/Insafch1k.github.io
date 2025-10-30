@@ -1,8 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+
+h1, h2, h3, p, label, input, button {
+    font-family: 'Inter';
+}
+
+
 h1 {
     text-align: center;
     font-size: 26px;
-    color: black;
+    color: #1a1a2e;
 }
+
 
 .taskboard__lists {
     display: flex;
@@ -10,11 +19,12 @@ h1 {
     gap: 40px;
 }
 
+
 body.board-app {
     margin: 0;
-    background: #e9f0f6;
-    color: #1f2937;
+    background: #f0f4f8;
 }
+
 
 .board-app__inner {
     max-width: 1200px;
@@ -22,68 +32,52 @@ body.board-app {
     padding: 16px;
 }
 
-.board-app__header {
-    background: #2f80ed;
-    color: #fff;
-}
 
 .board-app__header .board-app__inner {
     padding-top: 12px;
     padding-bottom: 12px;
 }
 
+
 .board-app__header h1 {
     margin: 0;
     text-align: left;
     font-size: 28px;
-    color: #fff;
+    color: #1a1a2e;
 }
+
 
 .add-task {
     margin-top: 16px;
     margin-bottom: 16px;
 }
 
-.add-task input {
-    border: 1px solid;
-    border-radius: 15px;
-    padding: 10px;
-}
+
 
 .add-task__form {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 12px;
-    background: #fff;
-    border-radius: 12px;
+    background: #ffffff;
+    border-radius: 6px;
     padding: 16px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
     width: fit-content;
 }
 
-.add-task__input-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
 
-.add-task__input-wrapper label {
-    font-size: 14px;
-    font-weight: 600;
-    color: #111827;
-}
-
-.add-task__input-wrapper input[type="text"] {
-    width: 260px;
-    height: 36px;
-    padding: 8px 12px;
-    border: 1px solid #e5e7eb;
+.add-task input {
+    border: 0px solid;
     border-radius: 6px;
-    background: #fff;
+    padding: 9px;
+    margin-right: 10px;
+    background-color: #e8edf2;
+
+
 }
 
-.add-task__button.button {
+
+.add-task__button {
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -91,66 +85,61 @@ body.board-app {
     padding: 0 14px;
     border: 0;
     border-radius: 6px;
-    background: #2f80ed;
-    color: #fff;
+    background: #3b82f6;
+    color: #ffffff;
     cursor: pointer;
 }
+
 
 .add-task__button.button span {
     font-weight: 600;
 }
 
+
 .taskboard {
     margin-top: 12px;
 }
 
+
 .taskboard__inner {
-    display: block;
-}
-
-.taskboard__title {
-    display: none; 
-}
-
-.taskboard__lists {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
-}
-
-.task-list {
     display: flex;
-    flex-direction: column;
-    gap: 12px;
+    flex-direction: row;
+    gap: 50px;
+
+
 }
+
 
 .task-list__title {
-    display: inline-block;
     align-self: flex-start;
-    background: #e5e7eb;
-    color: #374151;
+    background: #3b82f6;
+    color: #ffffff;
     padding: 6px 12px;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 14px;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
 }
+
 
 .task-list__items {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 5px;
 }
 
-.task-card {
-    background: #fff;
-    border-radius: 10px;
-    padding: 12px 14px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
-    border-left-color: #e9f0f6;
-}
 
-.task-card__title {
+.task-item__title {
     margin: 0;
     font-size: 14px;
-    color: #1f2937;
+}
+
+
+.task-item {
+
+    background-color: #ffffff;
+    border-left: 3px solid #3b82f6;
+    padding: 10px;
+    border-radius: 6px;
+    font-family: 'Inter';
+
 }
