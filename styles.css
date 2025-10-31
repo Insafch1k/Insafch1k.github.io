@@ -191,3 +191,8 @@ body.board-app {
     color: #000;
     margin: 0 0 0 10px;
 }
+
+.clear-basket:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
