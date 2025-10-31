@@ -1,7 +1,7 @@
 import AbstractComponent from '../framework/view/abstract-component.js';
 
 function createTaskListEmptyComponentTemplate() {
-  return `<p>Перетащите карточку</p>`;
+  return `<p class="empty-task">Перетащите карточку</p>`;
 }
 
 export default class TaskListEmptyComponent extends AbstractComponent {

@@ -192,6 +192,15 @@ body.board-app {
     margin: 0 0 0 10px;
 }
 
+.empty-task {
+    background-color: #e8edf2;
+    padding: 9px;
+    border-radius: 6px;
+    font-family: 'Inter';
+    margin: 0;
+    border: 2px dashed #000000;
+}
+
 .clear-basket:disabled {
     opacity: 0.5;
     cursor: not-allowed;
