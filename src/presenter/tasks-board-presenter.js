@@ -3,7 +3,7 @@ import TaskItemComponent from '../view/task-item-component.js'
 import TaskBoardComponent from '../view/task-board-component.js'
 import { render } from '../framework/render.js'
 import TasksModel from '../model/task-model.js';
-import { Status } from '../const.js';
+import { Status, StatusLabel } from '../const.js';
 import ClearBasketComponent from '../view/clear-basket-component.js';
 import TaskListEmptyComponent from '../view/task-list-empty-component.js';
 
@@ -60,16 +60,20 @@ export default class TaskBoardPresenter {
     }
 
     #renderTasksList(status) {
-        const taskListComponent = new TaskListComponent({status});
-        render(taskListComponent, this.#tasksBoardComponent.element);
-    
+        const tasksListComponent = new TaskListComponent({
+          status,
+          label: StatusLabel[status],
+          onTaskDrop: this.#handleTaskDrop.bind(this)
+        });
+        render(tasksListComponent, this.#tasksBoardComponent.element);
+   
         if (status === Status.BASKET) {
-          this.#renderClearBasketButton(taskListComponent.element);
+          this.#renderClearBasketButton(tasksListComponent.element);
         }
-    
+   
         const tasksForStatus = getTasksByStatus(this.tasks, status);
-        const container = taskListComponent.element.querySelector('.task-list__items');
-    
+        const container = tasksListComponent.element.querySelector('.task-list__items');
+   
         if (tasksForStatus.length === 0) {
           this.#renderEmptyList(container);
         } else {
@@ -77,6 +81,10 @@ export default class TaskBoardPresenter {
             this.#renderTask(task, container);
           });
         }
+    }   
+    
+    #handleTaskDrop(taskId, newStatus, beforeTaskId) {
+        this.#tasksModel.updateTaskStatusAndOrder(taskId, newStatus, beforeTaskId);
     }
 
     #renderTask(task, container) {

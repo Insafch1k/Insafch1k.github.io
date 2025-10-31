@@ -7,7 +7,7 @@ function createTaskItemComponentTemplate(task) {
   const {title, status} = task;
     return (
       `
-      <div class="task-item task-item--${status}">
+      <div class="task-item task-item--${status}" id="${task.id}" draggable="true">
         <p class="task-item__title">${title}</p>
       </div>
       `
@@ -23,13 +23,24 @@ function createTaskItemComponentTemplate(task) {
 // </div>`
 
 export default class TaskItemComponent extends AbstractComponent {
-
-  constructor ({task}) {
+  constructor({task}) {
     super();
     this.task = task;
+    this.#afterCreateElement();
   }
 
   get template() {
     return createTaskItemComponentTemplate(this.task);
+  }
+
+  #afterCreateElement() {
+    this.#makeTaskDraggable();
+  }
+
+  #makeTaskDraggable() {
+    this.element.setAttribute('draggable', true);
+    this.element.addEventListener('dragstart', (event) => {
+      event.dataTransfer.setData('text/plain', this.task.id);
+    });
   }
 }

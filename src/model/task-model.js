@@ -41,4 +41,26 @@ export default class TasksModel {
         this.#boardtasks = this.#boardtasks.filter(task => task.status !== Status.BASKET);
         this._notifyObservers();
     }
+
+    updateTaskStatusAndOrder(taskId, newStatus, beforeTaskId) {
+        const task = this.#boardtasks.find(t => t.id === taskId);
+        if (!task) return;
+      
+        task.status = newStatus;
+        const statusTasks = this.#boardtasks.filter(t => t.status === newStatus);
+        const taskIndex = statusTasks.findIndex(t => t.id === taskId);
+        if (taskIndex > -1) statusTasks.splice(taskIndex, 1);
+      
+        let insertIndex = statusTasks.length; 
+        if (beforeTaskId) {
+          const beforeIndex = statusTasks.findIndex(t => t.id === beforeTaskId);
+          if (beforeIndex > -1) insertIndex = beforeIndex;
+        }
+        statusTasks.splice(insertIndex, 0, task);
+      
+        const otherTasks = this.#boardtasks.filter(t => t.status !== newStatus);
+        this.#boardtasks = [...otherTasks, ...statusTasks];
+      
+        this._notifyObservers();
+      }
   }
