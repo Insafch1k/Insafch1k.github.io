@@ -5,11 +5,15 @@ import { render } from '../framework/render.js'
 import TasksModel from '../model/task-model.js';
 import { Status } from '../const.js';
 import ClearBasketComponent from '../view/clear-basket-component.js';
+import TaskListEmptyComponent from '../view/task-list-empty-component.js';
+
+function getTasksByStatus(tasks, status) {
+    return tasks.filter(task => task.status === status);
+}
 
 export default class TaskBoardPresenter {
     #boardContainer = null;
     #tasksModel = null;
-
     #tasksBoardComponent = new TaskBoardComponent();
     #boardTasks = [];
 
@@ -19,24 +23,49 @@ export default class TaskBoardPresenter {
     }
 
     init() {
-        this.#boardTasks = [...this.#tasksModel.getTasks()];
+        this.#boardTasks = [...this.#tasksModel.tasks];
+        this.#renderBoard();
+    }
 
+    #renderBoard() {
         render(this.#tasksBoardComponent, this.#boardContainer);
-        const statuses = Object.values(Status);
-        for (let i = 0; i < statuses.length; i++) {
-            const tasksListComponent = new TaskListComponent({status: statuses[i]});
-            render(tasksListComponent, this.#tasksBoardComponent.getElement());
+        Object.values(Status).forEach((status) => {
+            this.#renderTasksList(status);
+        });
+    }
 
-            if (statuses[i] === Status.BASKET) {
-                const clearButton = new ClearBasketComponent();
-                render(clearButton, tasksListComponent.getElement());
-            }
-            
-            const tasksForStatus = this.#boardTasks.filter(task => task.status === statuses[i]);
-            for (let j = 0; j < tasksForStatus.length; j++) {
-                const taskComponent = new TaskItemComponent({task: tasksForStatus[j]});
-                render(taskComponent, tasksListComponent.getElement().querySelector('.task-list__items'));
-            }
+    #renderTasksList(status) {
+        const taskListComponent = new TaskListComponent({status});
+        render(taskListComponent, this.#tasksBoardComponent.element);
+
+        if (status === Status.BASKET) {
+            this.#renderClearBasketButton(taskListComponent.element);
         }
+
+        const tasksForStatus = getTasksByStatus(this.#boardTasks, status);
+        const container = taskListComponent.element.querySelector('.task-list__items');
+
+        if (tasksForStatus.length === 0) {
+            this.#renderEmptyList(container);
+        } else {
+            tasksForStatus.forEach((task) => {
+                this.#renderTask(task, container);
+            });
+        }
+    }
+
+    #renderTask(task, container) {
+        const taskComponent = new TaskItemComponent({task});
+        render(taskComponent, container);
+    }
+
+    #renderClearBasketButton(container) {
+        const clearButton = new ClearBasketComponent();
+        render(clearButton, container);
+    }
+
+    #renderEmptyList(container) {
+        const emptyComponent = new TaskListEmptyComponent();
+        render(emptyComponent, container);
     }
 }

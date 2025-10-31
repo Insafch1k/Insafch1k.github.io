@@ -1,3 +1,4 @@
+import AbstractComponent from '../framework/view/abstract-component.js';
 import {createElement} from '../framework/render.js';
 import { StatusLabel } from '../const.js';
 
@@ -21,28 +22,14 @@ function createTaskItemComponentTemplate(task) {
 // <button aria-label="Изменить" class="task-item__edit" type="button"></button>
 // </div>`
 
-export default class TaskItemComponent {
+export default class TaskItemComponent extends AbstractComponent {
 
   constructor ({task}) {
+    super();
     this.task = task;
   }
 
-  getTemplate() {
+  get template() {
     return createTaskItemComponentTemplate(this.task);
-  }
-
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-
-    return this.element;
-  }
-
-
-  removeElement() {
-    this.element = null;
   }
 }
