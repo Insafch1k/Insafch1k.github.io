@@ -1,16 +1,23 @@
 import { JSX } from "react";
 import { FavoritesLocationItems } from "../../components/favorites-locations-items/favorites-locations-items";
+import { Logo } from "../../components/logo/logo";
+import { FullOffer } from "../../types/offer";
+import { FavoriteCardList } from "../../components/favorite-card-list/favorite-card-list";
+import { OffersList } from "../../types/offer";
 
-function FavoritesPage(): JSX.Element {
+type FavoritesPageProps = {
+  offers: FullOffer[];
+  offersList: OffersList[];
+};
+
+function FavoritesPage({ offersList }: FavoritesPageProps): JSX.Element {
     return(
         <div className="page">
       <header className="header">
         <div className="container">
           <div className="header__wrapper">
             <div className="header__left">
-              <a className="header__logo-link" href="main.html">
-                <img className="header__logo" src="img/logo.svg" alt="Rent service logo" width="81" height="41"></img>
-              </a>
+              <Logo />
             </div>
             <nav className="header__nav">
               <ul className="header__nav-list">
@@ -38,9 +45,7 @@ function FavoritesPage(): JSX.Element {
           <section className="favorites">
             <h1 className="favorites__title">Saved listing</h1>
             <ul className="favorites__list">
-              <FavoritesLocationItems/>
-
-              <FavoritesLocationItems/>
+              <FavoriteCardList offersList={offersList} />
             </ul>
           </section>
         </div>
