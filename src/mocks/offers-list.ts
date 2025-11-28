@@ -6,7 +6,7 @@ export const offersList: OffersList[] = [
     title: 'Wood and stone place',
     type: 'apartment',
     price: 370,
-    previewImage: '11.jpg',
+    previewImage: '/img/apartment-01.jpg',
     city: {
       name: 'Paris',
       location: {

@@ -5,6 +5,7 @@ import { FullOffer } from "../../types/offer";
 import { CitiesCardList } from "../../components/cities-card-list/cities-card-list";
 import { offersList } from "../../mocks/offers-list";
 import { OffersList } from "../../types/offer";
+import { Map } from "../../components/map/map";
 
 type MainPageProps = {
     rentalOffersCount: number;
@@ -12,7 +13,9 @@ type MainPageProps = {
     offersList: OffersList[];
 }
 
+
 function MainPage({rentalOffersCount, offers, offersList} : MainPageProps): JSX.Element {
+    const amsterdam = offers[0].city.location;
     return(<div className ="page page--gray page--main">
       <header className ="header">
         <div className ="container">
@@ -105,7 +108,11 @@ function MainPage({rentalOffersCount, offers, offersList} : MainPageProps): JSX.
               </div>
             </section>
             <div className="cities__right-section">
-              <section className="cities__map map"></section>
+              <Map
+                className="cities__map"
+                city={amsterdam}
+                offers={offers}
+              />
             </div>
           </div>
         </div>

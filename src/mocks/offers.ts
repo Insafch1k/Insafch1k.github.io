@@ -7,16 +7,16 @@ const offers: FullOffer[] = [
     type: 'apartment',
     price: 370,
     city: {
-      name: 'Paris',
+      name: 'Amsterdam',
       location: {
-        latitude: 48.85661,
-        longitude: 2.351499,
+        latitude: 52.37454,
+        longitude: 4.897976,
         zoom: 13,
       },
     },
     location: {
-      latitude: 48.868610000000004,
-      longitude: 2.342499,
+      latitude: 52.3909553943508,
+      longitude: 4.85309666406198,
       zoom: 16,
     },
     isFavorite: true,
@@ -32,11 +32,18 @@ const offers: FullOffer[] = [
       'Coffee machine',
     ],
     host: {
-      name: 'Angelina',
-      avatarUrl: 'avatar-angelina.jpg',
+      name: 'Insaf',
+      avatarUrl: '/img/avatar-insaf.png',
       isPro: true,
     },
-    images: ['20.jpg', '17.jpg', '16.jpg', '15.jpg', '12.jpg', '7.jpg'],
+    images: [
+      '/img/room.jpg',
+      '/img/apartment-01.jpg',
+      '/img/apartment-02.jpg',
+      '/img/apartment-03.jpg',
+      '/img/studio-01.jpg',
+      '/img/studio-photos.jpg',
+    ],
     maxAdults: 3,
   },
 
@@ -46,16 +53,16 @@ const offers: FullOffer[] = [
     type: 'apartment',
     price: 120,
     city: {
-      name: 'Cologne',
+      name: 'Amsterdam',
       location: {
-        latitude: 50.938361,
-        longitude: 6.959974,
+        latitude: 52.37454,
+        longitude: 4.897976,
         zoom: 13,
       },
     },
     location: {
-      latitude: 50.930361,
-      longitude: 6.945974,
+      latitude: 52.3609553943508,
+      longitude: 4.85309666406198,
       zoom: 16,
     },
     isFavorite: false,
@@ -66,10 +73,14 @@ const offers: FullOffer[] = [
     goods: ['Wi‑Fi', 'Kitchen', 'Washer'],
     host: {
       name: 'Max',
-      avatarUrl: 'avatar-max.jpg',
+      avatarUrl: '/img/avatar-max.jpg',
       isPro: false,
     },
-    images: ['studio-1.jpg', 'studio-2.jpg', 'studio-3.jpg'],
+    images: [
+      '/img/studio-01.jpg',
+      '/img/room-small.jpg',
+      '/img/room.jpg',
+    ],
     maxAdults: 2,
   },
 
@@ -87,8 +98,8 @@ const offers: FullOffer[] = [
       },
     },
     location: {
-      latitude: 52.36954,
-      longitude: 4.914976,
+      latitude: 52.3909553943508,
+      longitude: 4.929309666406198,
       zoom: 16,
     },
     isFavorite: true,
@@ -99,10 +110,14 @@ const offers: FullOffer[] = [
     goods: ['Wi‑Fi', 'Kitchen', 'Dishwasher', 'Baby seat'],
     host: {
       name: 'Sarah',
-      avatarUrl: 'avatar-sarah.jpg',
+      avatarUrl: '/img/avatar-max.jpg',
       isPro: true,
     },
-    images: ['house-1.jpg', 'house-2.jpg', 'house-3.jpg'],
+    images: [
+      '/img/apartment-01.jpg',
+      '/img/apartment-02.jpg',
+      '/img/apartment-03.jpg',
+    ],
     maxAdults: 5,
   },
 
@@ -112,16 +127,16 @@ const offers: FullOffer[] = [
     type: 'hotel',
     price: 90,
     city: {
-      name: 'Brussels',
+      name: 'Amsterdam',
       location: {
-        latitude: 50.846557,
-        longitude: 4.351697,
+        latitude: 52.37454,
+        longitude: 4.897976,
         zoom: 13,
       },
     },
     location: {
-      latitude: 50.849557,
-      longitude: 4.364697,
+      latitude: 52.3809553943508,
+      longitude: 4.939309666406198,
       zoom: 16,
     },
     isFavorite: false,
@@ -132,10 +147,14 @@ const offers: FullOffer[] = [
     goods: ['Wi‑Fi', 'Breakfast', 'Air conditioning'],
     host: {
       name: 'Hotel staff',
-      avatarUrl: 'avatar-hotel.jpg',
+      avatarUrl: '/img/avatar-max.jpg',
       isPro: false,
     },
-    images: ['hotel-1.jpg', 'hotel-2.jpg'],
+    images: [
+      '/img/room-small.jpg',
+      '/img/room.jpg',
+      '/img/studio-photos.jpg',
+    ],
     maxAdults: 2,
   },
 ];
