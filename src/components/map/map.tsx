@@ -1,4 +1,3 @@
-
 import { useRef, useEffect, JSX } from 'react';
 import { Icon, Marker, layerGroup } from 'leaflet';
 import useMap from '../../hooks/use-map';
@@ -12,7 +11,7 @@ type MapProps = {
 };
 
 const defaultCustomIcon = new Icon({
-  iconUrl: '/img/pin.svg', 
+  iconUrl: '/img/pin.svg',
   iconSize: [40, 40],
   iconAnchor: [20, 40]
 });
@@ -26,6 +25,12 @@ const currentCustomIcon = new Icon({
 function Map({ city, points, selectedPoint }: MapProps): JSX.Element {
   const mapRef = useRef(null);
   const map = useMap(mapRef, city);
+
+  useEffect(() => {
+    if (map) {
+      map.setView([city.location.latitude, city.location.longitude], city.location.zoom);
+    }
+  }, [map, city]);
 
   useEffect(() => {
     if (map) {

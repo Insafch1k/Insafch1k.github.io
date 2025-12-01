@@ -27,7 +27,6 @@ function OfferPage({ offers }: OfferPageProps): JSX.Element {
 
   return (
     <div className="page">
-      {}
       <div style={{ display: 'none' }}>
         <svg xmlns="http://www.w3.org/2000/svg">
           <symbol id="icon-arrow-select" viewBox="0 0 7 4">
@@ -41,7 +40,6 @@ function OfferPage({ offers }: OfferPageProps): JSX.Element {
           </symbol>
         </svg>
       </div>
-      {}
 
       <header className="header">
         <div className="container">

@@ -38,7 +38,6 @@ function ReviewForm(): JSX.Element {
                 style={{ cursor: 'pointer' }}
             >
               <svg className="form__star-image" width="37" height="33" style={{ pointerEvents: 'none' }}> 
-                {}
                 <use href="#icon-star"></use>
               </svg>
             </label>
