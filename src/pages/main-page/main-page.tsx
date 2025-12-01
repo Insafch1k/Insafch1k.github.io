@@ -1,6 +1,7 @@
 import { JSX } from 'react';
 import { Logo } from '../../components/logo/logo';
 import { CitiesCardList } from '../../components/cities-card-list/cities-card-list';
+import { Map } from '../../components/map/map';
 import { OffersList } from '../../types/offer';
 
 type MainPageProps = {
@@ -83,11 +84,14 @@ function MainPage({ rentalOffersCount, offersList }: MainPageProps): JSX.Element
                   <li className="places__option" tabIndex={0}>Top rated first</li>
                 </ul>
               </form>
+              
               <CitiesCardList offersList={offersList} />
 
             </section>
             <div className="cities__right-section">
-              <section className="cities__map map"></section>
+              <section className="cities__map map">
+                 <Map city={offersList[0].city} points={offersList} />
+              </section>
             </div>
           </div>
         </div>

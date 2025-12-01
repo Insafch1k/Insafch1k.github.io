@@ -1,15 +1,15 @@
-
 import { JSX } from 'react';
 import { OffersList } from '../../types/offer';
 import { CitiesCard } from '../cities-card/cities-card';
 
 type CitiesCardListProps = {
   offersList: OffersList[];
+  className?: string;
 };
 
-function CitiesCardList({ offersList }: CitiesCardListProps): JSX.Element {
+function CitiesCardList({ offersList, className = "cities__places-list places__list tabs__content" }: CitiesCardListProps): JSX.Element {
   return (
-    <div className="cities__places-list places__list tabs__content">
+    <div className={className}>
       {offersList.map((item) => (
         <CitiesCard
           key={item.id}
