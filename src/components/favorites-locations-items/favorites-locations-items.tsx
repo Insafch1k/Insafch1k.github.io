@@ -1,5 +1,5 @@
 import { JSX } from "react";
-import { FavoritesCard } from "../favourites-card/favourites-card";
+import { FavoritesCard } from "../favorites-card/favorites-card";
 
 function FavoritesLocationItems(): JSX.Element{
     return(<li className="favorites__locations-items">

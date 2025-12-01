@@ -1,16 +1,21 @@
-import { JSX } from "react";
-import { FavoritesLocationItems } from "../../components/favorites-locations-items/favorites-locations-items";
 
-function FavoritesPage(): JSX.Element {
-    return(
-        <div className="page">
+import { JSX } from 'react';
+import { Logo } from '../../components/logo/logo';
+import { FavoritesList } from '../../components/favorites-list/favorites-list';
+import { FullOffer } from '../../types/offer';
+
+type FavoritesPageProps = {
+  offers: FullOffer[];
+}
+
+function FavoritesPage({ offers }: FavoritesPageProps): JSX.Element {
+  return (
+    <div className="page">
       <header className="header">
         <div className="container">
           <div className="header__wrapper">
             <div className="header__left">
-              <a className="header__logo-link" href="main.html">
-                <img className="header__logo" src="img/logo.svg" alt="Rent service logo" width="81" height="41"></img>
-              </a>
+              <Logo />
             </div>
             <nav className="header__nav">
               <ul className="header__nav-list">
@@ -19,7 +24,9 @@ function FavoritesPage(): JSX.Element {
                     <div className="header__avatar-wrapper user__avatar-wrapper">
                     </div>
                     <span className="header__user-name user__name">Myemail@gmail.com</span>
-                    <span className="header__favorite-count">3</span>
+                    <span className="header__favorite-count">
+                        {offers.filter((o) => o.isFavorite).length}
+                    </span>
                   </a>
                 </li>
                 <li className="header__nav-item">
@@ -35,17 +42,17 @@ function FavoritesPage(): JSX.Element {
 
       <main className="page__main page__main--favorites">
         <div className="page__favorites-container container">
-          <section className="favorites">
-            <h1 className="favorites__title">Saved listing</h1>
-            <ul className="favorites__list">
-              <FavoritesLocationItems/>
-
-              <FavoritesLocationItems/>
-            </ul>
-          </section>
+           <FavoritesList offers={offers} />
         </div>
       </main>
-    </div>)
+      
+      <footer className="footer container">
+        <a className="footer__logo-link" href="main.html">
+          <img className="footer__logo" src="img/logo.svg" alt="6 cities logo" width="64" height="33" />
+        </a>
+      </footer>
+    </div>
+  );
 }
 
 export { FavoritesPage };
