@@ -1,0 +1,300 @@
+:root {
+  --color-text-primary: #0d141c;
+  --color-text-secondary: #49739c;
+  --color-bg-main: #ffffff;
+  --color-bg-subtle: #f8fafc;
+  --color-bg-interactive: #e7edf4;
+  --color-border: #e7edf4;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--color-bg-main);
+  color: var(--color-text-primary);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+  margin: 0;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* Header */
+.site-header {
+  background-color: var(--color-bg-main);
+  border-bottom: 1px solid var(--color-border);
+  height: 65px;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+}
+
+.header-container {
+  width: 100%;
+  max-width: 1920px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand-title {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.main-nav ul {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+}
+
+.main-nav a {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.user-profile img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Dashboard layout */
+.dashboard-layout {
+  display: flex;
+  max-width: 1308px; /* 320 sidebar + 4 gap + 960 content + 24 padding */
+  margin: 0 auto;
+  padding: 20px 24px;
+  gap: 4px;
+}
+
+/* Sidebar */
+.sidebar {
+  flex: 0 0 320px;
+  background-color: var(--color-bg-subtle);
+  padding: 16px;
+  align-self: flex-start;
+  min-height: 700px;
+}
+
+.sidebar-nav ul {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.sidebar-nav li.active a {
+  background-color: var(--color-bg-interactive);
+}
+
+.sidebar-nav a:hover {
+  background-color: var(--color-bg-interactive);
+}
+
+.sidebar-nav img {
+  width: 24px;
+  height: 24px;
+}
+
+/* Main content */
+.main-content {
+  flex: 1;
+  max-width: 960px;
+  display: flex;
+  flex-direction: column;
+}
+
+.content-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 32px;
+}
+
+/* Summary card */
+.budget-summary-card {
+  display: flex;
+  gap: 16px;
+  align-items: stretch;
+}
+
+.summary-text {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  justify-content: flex-start;
+  padding-top: 24px;
+}
+
+.summary-text h3 {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.summary-text p {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.summary-image {
+  flex: 1;
+  border-radius: 8px;
+  overflow: hidden;
+  aspect-ratio: 304 / 171;
+}
+
+.summary-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Categories */
+.categories-section {
+  margin-top: 36px;
+}
+
+.section-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.categories-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.category-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  min-height: 72px;
+  background-color: var(--color-bg-subtle);
+}
+
+.category-icon {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-bg-interactive);
+  border-radius: 8px;
+}
+
+.category-icon img {
+  width: 24px;
+  height: 24px;
+}
+
+.category-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.category-name {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.category-info {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .main-nav {
+    display: none;
+  }
+
+  .dashboard-layout {
+    flex-direction: column;
+    gap: 24px;
+    padding: 16px;
+  }
+
+  .sidebar {
+    width: 100%;
+    flex: 0 0 auto;
+    min-height: auto;
+  }
+
+  .sidebar-nav ul {
+    flex-direction: row;
+    overflow-x: auto;
+  }
+
+  .main-content {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-container {
+    padding: 0 16px;
+  }
+
+  .budget-summary-card {
+    flex-direction: column;
+  }
+
+  .summary-text {
+    padding-top: 0;
+  }
+
+  .content-title {
+    font-size: 28px;
+    margin-bottom: 24px;
+  }
+
+  .section-title {
+    font-size: 20px;
+  }
+}
