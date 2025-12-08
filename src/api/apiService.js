@@ -33,14 +33,18 @@ class ApiService {
       const response = await fetch(url, config);
       
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorText = await response.text();
+        console.error('API request failed:', response.status, errorText);
+        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
       }
       
       if (config.method === 'DELETE') {
         return { success: true };
       }
       
-      return await response.json();
+      const data = await response.json();
+      console.log('API response:', config.method, url, data);
+      return data;
     } catch (error) {
       console.error('API request failed:', error);
       throw error;
@@ -70,10 +74,12 @@ class ApiService {
       if (method === 'GET') {
         return await mockApi.getBudgets();
       } else if (method === 'POST') {
-        return await mockApi.createBudget(options.body);
+        const bodyData = typeof options.body === 'string' ? JSON.parse(options.body) : options.body;
+        return await mockApi.createBudget(bodyData);
       } else if (method === 'PUT') {
         const id = path[1];
-        return await mockApi.updateBudget(parseInt(id), options.body);
+        const bodyData = typeof options.body === 'string' ? JSON.parse(options.body) : options.body;
+        return await mockApi.updateBudget(parseInt(id), bodyData);
       } else if (method === 'DELETE') {
         const id = path[1];
         return await mockApi.deleteBudget(parseInt(id));
@@ -166,7 +172,8 @@ class ApiService {
   }
 
   async updateBudget(id, budgetData) {
-    const response = await this.request(`/budgets/${id}`, {
+    const idStr = String(id);
+    const response = await this.request(`/budgets/${idStr}`, {
       method: 'PUT',
       body: JSON.stringify(budgetData)
     });

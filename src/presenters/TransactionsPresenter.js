@@ -1,5 +1,6 @@
 import { TransactionsView } from '../views/TransactionsView.js';
 import { apiService } from '../api/apiService.js';
+import { TransactionModal } from '../components/TransactionModal.js';
 
 export class TransactionsPresenter {
   constructor() {
@@ -27,7 +28,21 @@ export class TransactionsPresenter {
   }
 
   showAddTransactionModal() {
-    alert('Функция добавления транзакции будет реализована');
+    const modal = new TransactionModal(
+      async (transactionData) => {
+        try {
+          await apiService.createTransaction(transactionData);
+          await this.loadTransactions(this.view.filters);
+        } catch (error) {
+          console.error('Ошибка создания транзакции:', error);
+          alert('Не удалось создать транзакцию');
+        }
+      },
+      () => {
+      }
+    );
+    
+    modal.mount();
   }
 
   async init() {

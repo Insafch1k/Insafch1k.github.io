@@ -4,6 +4,7 @@
   --color-bg-main: #ffffff;
   --color-bg-subtle: #f8fafc;
   --color-bg-card: #e7edf4;
+  --color-bg-hover: #f1f5f9;
   --color-border: #e7edf4;
   --color-border-light: #cedbe8;
   --font-family: 'Inter', sans-serif;
@@ -215,23 +216,47 @@ a {
 }
 
 .filter-tag {
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   background-color: var(--color-bg-card);
   border: none;
   border-radius: 8px;
   padding: 6px 12px;
-  height: 32px;
+  min-height: 32px;
   cursor: pointer;
   white-space: nowrap;
   font-size: 14px;
+  font-weight: 500;
   color: var(--color-primary);
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+.filter-tag:hover {
+  background-color: var(--color-bg-hover);
+}
+
+.filter-tag.active {
+  background-color: var(--color-secondary);
+  color: var(--color-bg-main);
+}
+
+.filter-tag.active img {
+  filter: brightness(0) invert(1);
 }
 
 .filter-tag img {
   width: 20px;
   height: 20px;
+  flex-shrink: 0;
+  display: block;
+}
+
+.filter-tag span {
+  display: inline-block;
+  line-height: 1.2;
 }
 
 /* Select Input */
@@ -301,25 +326,24 @@ a {
   border-bottom: none;
 }
 
-.date-col, .desc-col, .cat-col, .amount-col {
-  /* Specific column classes for table cells */
-}
 
 .badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--color-bg-card);
-  color: var(--color-primary);
+  background-color: #E7EDF4;
+  color: var(--color-secondary);
   padding: 4px 12px;
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: 12px;
+  font-size: 12px;
   font-weight: 500;
-  min-width: 84px;
+  white-space: nowrap;
 }
+
 
 .amount-col {
   color: var(--color-secondary);
+  white-space: nowrap;
 }
 
 .positive {

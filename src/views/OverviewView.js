@@ -80,7 +80,7 @@ export class OverviewView {
               <div class="col col-desc">Описание</div>
               <div class="col col-amount">Сумма</div>
             </div>
-            ${TransactionCard.renderList(recentTransactions)}
+            ${TransactionCard.renderListForOverview(recentTransactions)}
           </div>
         </div>
       </main>

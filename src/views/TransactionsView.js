@@ -59,12 +59,7 @@ export class TransactionsView {
           </div>
         </div>
 
-        <div class="select-wrapper">
-          <div class="select-input-container">
-            <input type="text" class="select-input" readonly id="sort-select">
-            <img src="images/icon-select.svg" alt="" class="select-icon">
-          </div>
-        </div>
+       
 
         <div class="transactions-table-container">
           <table class="transactions-table">

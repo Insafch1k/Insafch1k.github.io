@@ -44,18 +44,19 @@ export class BudgetsView {
             <h3>Ваш бюджет на ${currentMonth}</h3>
             <p>Осталось ${formatCurrency(totalRemaining)} из ${formatCurrency(totalLimit)}</p>
           </div>
-          <div class="summary-image">
-            <img src="images/budget-illustration.png" alt="Illustration of plants on a desk">
-          </div>
         </article>
         <section class="categories-section">
           <h3 class="section-title">Категории</h3>
           <div class="categories-list">
-            ${BudgetCard.renderList(this.budgets)}
+            ${BudgetCard.renderList(this.budgets, this.onEditCallback)}
           </div>
         </section>
       </main>
     `;
+  }
+
+  setOnEditCallback(callback) {
+    this.onEditCallback = callback;
   }
 
   updateBudgets(budgets) {
