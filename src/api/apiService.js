@@ -33,18 +33,14 @@ class ApiService {
       const response = await fetch(url, config);
       
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('API request failed:', response.status, errorText);
-        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
       
       if (config.method === 'DELETE') {
         return { success: true };
       }
       
-      const data = await response.json();
-      console.log('API response:', config.method, url, data);
-      return data;
+      return await response.json();
     } catch (error) {
       console.error('API request failed:', error);
       throw error;
@@ -74,15 +70,13 @@ class ApiService {
       if (method === 'GET') {
         return await mockApi.getBudgets();
       } else if (method === 'POST') {
-        const bodyData = typeof options.body === 'string' ? JSON.parse(options.body) : options.body;
-        return await mockApi.createBudget(bodyData);
+        return await mockApi.createBudget(options.body);
       } else if (method === 'PUT') {
         const id = path[1];
-        const bodyData = typeof options.body === 'string' ? JSON.parse(options.body) : options.body;
-        return await mockApi.updateBudget(parseInt(id), bodyData);
+        return await mockApi.updateBudget(id, options.body);
       } else if (method === 'DELETE') {
         const id = path[1];
-        return await mockApi.deleteBudget(parseInt(id));
+        return await mockApi.deleteBudget(id);
       }
     } else if (path[0] === 'categories') {
       const { mockCategories } = await import('../data/mockData.js');
@@ -172,8 +166,8 @@ class ApiService {
   }
 
   async updateBudget(id, budgetData) {
-    const idStr = String(id);
-    const response = await this.request(`/budgets/${idStr}`, {
+    const safeId = encodeURIComponent(id);
+    const response = await this.request(`/budgets/${safeId}`, {
       method: 'PUT',
       body: JSON.stringify(budgetData)
     });

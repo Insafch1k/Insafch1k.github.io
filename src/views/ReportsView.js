@@ -134,11 +134,6 @@ export class ReportsView {
           </div>
         </div>
 
-        <!-- Actions -->
-        <div class="actions-footer">
-          <button class="btn btn-secondary" id="export-btn">Экспорт</button>
-          <button class="btn btn-primary" id="settings-btn">Настроить</button>
-        </div>
       </main>
     `;
   }

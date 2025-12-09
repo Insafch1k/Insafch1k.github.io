@@ -96,7 +96,7 @@ class MockApi {
 
   async updateBudget(id, budgetData) {
     await delay(400);
-    const index = this.budgets.findIndex(b => b.id === id);
+    const index = this.budgets.findIndex(b => String(b.id) === String(id));
     if (index === -1) throw new Error('Бюджет не найден');
     
     this.budgets[index] = { 
@@ -109,7 +109,7 @@ class MockApi {
 
   async deleteBudget(id) {
     await delay(300);
-    const index = this.budgets.findIndex(b => b.id === id);
+    const index = this.budgets.findIndex(b => String(b.id) === String(id));
     if (index === -1) throw new Error('Бюджет не найден');
     
     this.budgets.splice(index, 1);
