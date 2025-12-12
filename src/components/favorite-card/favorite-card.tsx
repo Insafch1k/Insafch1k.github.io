@@ -1,4 +1,4 @@
-import { JSX } from "react";
+import { JSX, useState } from "react";
 import { OffersList } from "../../types/offer";
 import { Link } from "react-router-dom";
 import { AppRoute } from "../../const";
@@ -13,8 +13,10 @@ function FavoriteCard({
   previewImage,
   isPremium,
   rating,
+  isFavorite,
 }: FavoriteCardProps): JSX.Element {
   const ratingWidth = `${(rating / 5) * 100}%`;
+  const [isBookmarked, setIsBookmarked] = useState(isFavorite);
 
   return (
     <article className="favorites__card place-card">
@@ -42,6 +44,18 @@ function FavoriteCard({
             <b className="place-card__price-value">&euro;{price}</b>
             <span className="place-card__price-text">&#47;&nbsp;night</span>
           </div>
+          <button
+            className={`place-card__bookmark-button button ${
+              isBookmarked ? 'place-card__bookmark-button--active' : ''
+            }`}
+            type="button"
+            onClick={() => setIsBookmarked((prev) => !prev)}
+          >
+            <svg className="place-card__bookmark-icon" width="18" height="19">
+              <use href="#icon-bookmark"></use>
+            </svg>
+            <span className="visually-hidden">In bookmarks</span>
+          </button>
         </div>
         <div className="place-card__rating rating">
           <div className="place-card__stars rating__stars">

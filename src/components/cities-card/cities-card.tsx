@@ -1,5 +1,5 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import { AppRoute } from '../../const';
 
 type CitiesCardProps = {
@@ -10,18 +10,29 @@ type CitiesCardProps = {
   previewImage: string;
   isPremium: boolean;
   rating: number;
+  isFavorite: boolean;
+  onHover?: (id: string | undefined) => void;
 };
 
-function CitiesCard({ id, title, type, price, previewImage, isPremium, rating }: CitiesCardProps) {
-  const [, setOfferId] = useState('');
-
+function CitiesCard({
+  id,
+  title,
+  type,
+  price,
+  previewImage,
+  isPremium,
+  rating,
+  isFavorite,
+  onHover,
+}: CitiesCardProps) {
+  const [isBookmarked, setIsBookmarked] = useState(isFavorite);
   const ratingWidth = `${(rating / 5) * 100}%`;
 
   return (
     <article
       className="cities__card place-card"
-      onMouseOver={() => setOfferId(id)}
-      onMouseOut={() => setOfferId('')}
+      onMouseOver={() => onHover?.(id)}
+      onMouseOut={() => onHover?.(undefined)}
     >
       {isPremium ? (
         <div className="place-card__mark">
@@ -47,6 +58,18 @@ function CitiesCard({ id, title, type, price, previewImage, isPremium, rating }:
             <b className="place-card__price-value">&euro;{price}</b>
             <span className="place-card__price-text">&#47;&nbsp;night</span>
           </div>
+          <button
+            className={`place-card__bookmark-button button ${
+              isBookmarked ? 'place-card__bookmark-button--active' : ''
+            }`}
+            type="button"
+            onClick={() => setIsBookmarked((prev) => !prev)}
+          >
+            <svg className="place-card__bookmark-icon" width="18" height="19">
+              <use href="#icon-bookmark"></use>
+            </svg>
+            <span className="visually-hidden">To bookmarks</span>
+          </button>
         </div>
         <div className="place-card__rating rating">
           <div className="place-card__stars rating__stars">

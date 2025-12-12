@@ -1,16 +1,10 @@
-import { JSX } from "react";
-import { FavoritesLocationItems } from "../../components/favorites-locations-items/favorites-locations-items";
-import { Logo } from "../../components/logo/logo";
-import { FullOffer } from "../../types/offer";
-import { FavoriteCardList } from "../../components/favorite-card-list/favorite-card-list";
-import { OffersList } from "../../types/offer";
+import { JSX } from 'react';
+import { Logo } from '../../components/logo/logo';
+import { FavoriteCardList } from '../../components/favorite-card-list/favorite-card-list';
+import { useAppSelector } from '../../hooks';
 
-type FavoritesPageProps = {
-  offers: FullOffer[];
-  offersList: OffersList[];
-};
-
-function FavoritesPage({ offersList }: FavoritesPageProps): JSX.Element {
+function FavoritesPage(): JSX.Element {
+    const offersList = useAppSelector((state) => state.offers);
     return(
         <div className="page">
       <header className="header">

@@ -26,6 +26,7 @@ function OfferPage({ offers }: OfferProps): JSX.Element {
   const nearbyOffers = offers.slice(1, 4);
 
   const [offerReviews, setOfferReviews] = useState<Review[]>(mockReviews);
+  const [isBookmarked, setIsBookmarked] = useState<boolean>(offer.isFavorite);
 
   const handleCommentSubmit = (comment: string, rating: number) => {
     const newReview: Review = {
@@ -104,8 +105,11 @@ function OfferPage({ offers }: OfferProps): JSX.Element {
               <div className="offer__name-wrapper">
                 <h1 className="offer__name">{offer.title}</h1>
                 <button
-                  className="offer__bookmark-button button"
+                  className={`offer__bookmark-button button ${
+                    isBookmarked ? 'offer__bookmark-button--active' : ''
+                  }`}
                   type="button"
+                  onClick={() => setIsBookmarked((prev) => !prev)}
                 >
                   <svg className="offer__bookmark-icon" width="31" height="33">
                     <use href="#icon-bookmark"></use>
@@ -201,9 +205,10 @@ function OfferPage({ offers }: OfferProps): JSX.Element {
                   title={item.title}
                   type={item.type}
                   price={item.price}
-                  isPremium={item.isPremium}
                   previewImage={item.images[0]}
+                  isPremium={item.isPremium}
                   rating={item.rating}
+                  isFavorite={item.isFavorite}
                 />
               ))}
             </div>
