@@ -1,29 +1,46 @@
-import { JSX } from 'react';
+import { JSX, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { FullOffer } from '../../types/offer';
 import { NotFoundPage } from '../not-found-page/not-found-page';
 import { Logo } from '../../components/logo/logo';
 import { ReviewForm } from '../../components/review-form/review-form';
 import { Map } from '../../components/map/map';
 import { ReviewsList } from '../../components/reviews-list/reviews-list';
-import { reviews } from '../../mocks/reviews';
+import { reviews as initialReviews } from '../../mocks/reviews'; 
 import { CitiesCardList } from '../../components/cities-card-list/cities-card-list';
-import { offersList } from '../../mocks/offers-list';
+import { useAppDispatch, useAppSelector } from '../../hooks'; 
+import { toggleFavorite } from '../../store/action'; 
+import classNames from 'classnames'; 
 
-type OfferPageProps = {
-  offers: FullOffer[];
-};
-
-function OfferPage({ offers }: OfferPageProps): JSX.Element {
+function OfferPage(): JSX.Element {
   const params = useParams();
+  const dispatch = useAppDispatch();
+  
+  const offers = useAppSelector((state) => state.offers);
   const offer = offers.find((item) => item.id === params.id);
+  
+  const [currentReviews, setCurrentReviews] = useState(initialReviews);
 
   if (!offer) {
     return <NotFoundPage />;
   }
 
   const ratingWidth = Math.round(offer.rating) * 20 + '%';
-  const nearbyOffers = offersList.slice(0, 3);
+  const nearbyOffers = offers.filter(o => o.id !== offer.id).slice(0, 3);
+
+  const handleReviewSubmit = (rating: number, comment: string) => {
+      const newReview = {
+        id: String(Date.now()),
+        user: { id: 'user-999', name: 'Me', avatarUrl: '/img/avatar-max.jpg', isPro: false },
+        rating, comment, date: new Date().toISOString()
+    };
+    setCurrentReviews([newReview, ...currentReviews]);
+  };
+
+  const handleFavoriteClick = () => {
+    dispatch(toggleFavorite(offer.id));
+  };
+
+  const handleNearbyHover = (id: string | undefined) => {}; 
 
   return (
     <div className="page">
@@ -81,8 +98,19 @@ function OfferPage({ offers }: OfferPageProps): JSX.Element {
               )}
               <div className="offer__name-wrapper">
                 <h1 className="offer__name">{offer.title}</h1>
-                <button className="offer__bookmark-button button" type="button">
-                    <svg className="offer__bookmark-icon" width="31" height="33"><use href="#icon-bookmark"></use></svg>
+                <button 
+                  className={classNames("offer__bookmark-button", "button", { 
+                    "offer__bookmark-button--active": offer.isFavorite 
+                  })} 
+                  type="button"
+                  onClick={handleFavoriteClick}
+                >
+                    <svg className="offer__bookmark-icon" width="31" height="33">
+                      <use href="#icon-bookmark"></use>
+                    </svg>
+                    <span className="visually-hidden">
+                      {offer.isFavorite ? "In bookmarks" : "To bookmarks"}
+                    </span>
                 </button>
               </div>
               <div className="offer__rating rating">
@@ -121,9 +149,9 @@ function OfferPage({ offers }: OfferPageProps): JSX.Element {
                 </div>
               </div>
               <section className="offer__reviews reviews">
-                 <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">{reviews.length}</span></h2>
-                 <ReviewsList reviews={reviews} />
-                 <ReviewForm />
+                 <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">{currentReviews.length}</span></h2>
+                 <ReviewsList reviews={currentReviews} />
+                 <ReviewForm onSubmit={handleReviewSubmit} />
               </section>
             </div>
           </div>
@@ -143,3 +171,4 @@ function OfferPage({ offers }: OfferPageProps): JSX.Element {
 }
 
 export { OfferPage };
+  

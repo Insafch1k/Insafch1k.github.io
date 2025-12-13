@@ -1,6 +1,10 @@
 import { JSX, useState, ChangeEvent, FormEvent, Fragment } from 'react';
 
-function ReviewForm(): JSX.Element {
+type ReviewFormProps = {
+  onSubmit: (rating: number, comment: string) => void;
+};
+
+function ReviewForm({ onSubmit }: ReviewFormProps): JSX.Element {
   const [formData, setFormData] = useState({
     rating: 0,
     review: ''
@@ -11,9 +15,11 @@ function ReviewForm(): JSX.Element {
     setFormData({ ...formData, [name]: value });
   };
 
+
   const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
-    console.log(formData);
+    onSubmit(Number(formData.rating), formData.review);
+    setFormData({ rating: 0, review: '' });
   };
 
   return (
