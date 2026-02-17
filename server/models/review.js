@@ -1,7 +1,8 @@
 import { Model, DataTypes } from 'sequelize';
-import sequelize from '../db.js';
-import User from './user.js';
-import Offer from './offer.js';
+import sequelize from '../config/database.js';
+import { User } from './user.js';
+import { Offer } from './offer.js';
+
 
 
 class Review extends Model {}
@@ -30,7 +31,6 @@ Review.init({
 });
 
 
-// Связи
 Review.belongsTo(User, { as: 'author', foreignKey: { allowNull: false } });
 Review.belongsTo(Offer, { foreignKey: { allowNull: false } });
 
