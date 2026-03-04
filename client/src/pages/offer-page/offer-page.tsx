@@ -1,31 +1,34 @@
 import { JSX, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { NotFoundPage } from '../not-found-page/not-found-page';
-import { Logo } from '../../components/logo/logo';
 import { ReviewForm } from '../../components/review-form/review-form';
-import { Map } from '../../components/map/map';
 import { ReviewsList } from '../../components/reviews-list/reviews-list';
 import { reviews as initialReviews } from '../../mocks/reviews'; 
-import { CitiesCardList } from '../../components/cities-card-list/cities-card-list';
 import { useAppDispatch, useAppSelector } from '../../hooks'; 
 import { toggleFavorite } from '../../store/action'; 
-import classNames from 'classnames'; 
+import { Header } from '../../components/header/header';
+import { Map } from '../../components/map/map';
 
 function OfferPage(): JSX.Element {
   const params = useParams();
   const dispatch = useAppDispatch();
   
   const offers = useAppSelector((state) => state.offers);
-  const offer = offers.find((item) => item.id === params.id);
+  const foundOffer = offers.find((item) => item.id === params.id);
+  
+  // Type assertion to FullOffer since we expect full details for the current offer page
+  // In a real app, you might fetch full details separately
+  const offer = foundOffer as unknown as FullOffer;
   
   const [currentReviews, setCurrentReviews] = useState(initialReviews);
 
-  if (!offer) {
+  if (!foundOffer) {
     return <NotFoundPage />;
   }
 
   const ratingWidth = Math.round(offer.rating) * 20 + '%';
   const nearbyOffers = offers.filter(o => o.id !== offer.id).slice(0, 3);
+  const mapPoints = [foundOffer, ...nearbyOffers];
 
   const handleReviewSubmit = (rating: number, comment: string) => {
       const newReview = {
@@ -39,8 +42,6 @@ function OfferPage(): JSX.Element {
   const handleFavoriteClick = () => {
     dispatch(toggleFavorite(offer.id));
   };
-
-  const handleNearbyHover = (id: string | undefined) => {}; 
 
   return (
     <div className="page">
@@ -58,31 +59,13 @@ function OfferPage(): JSX.Element {
         </svg>
       </div>
 
-      <header className="header">
-        <div className="container">
-          <div className="header__wrapper">
-            <div className="header__left">
-              <Logo />
-            </div>
-            <nav className="header__nav">
-                <ul className="header__nav-list">
-                    <li className="header__nav-item user">
-                        <a className="header__nav-link header__nav-link--profile" href="#">
-                            <div className="header__avatar-wrapper user__avatar-wrapper"></div>
-                            <span className="header__user-name user__name">Myemail@gmail.com</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <main className="page__main page__main--offer">
         <section className="offer">
           <div className="offer__gallery-container container">
             <div className="offer__gallery">
-              {offer.images.slice(0, 6).map((item) => (
+              {(offer.images || [offer.previewImage]).slice(0, 6).map((item) => (
                 <div key={item} className="offer__image-wrapper">
                   <img className="offer__image" src={item} alt="Photo studio" />
                 </div>
@@ -99,18 +82,14 @@ function OfferPage(): JSX.Element {
               <div className="offer__name-wrapper">
                 <h1 className="offer__name">{offer.title}</h1>
                 <button 
-                  className={classNames("offer__bookmark-button", "button", { 
-                    "offer__bookmark-button--active": offer.isFavorite 
-                  })} 
-                  type="button"
-                  onClick={handleFavoriteClick}
+                    className={`offer__bookmark-button button ${offer.isFavorite ? 'offer__bookmark-button--active' : ''}`} 
+                    type="button"
+                    onClick={handleFavoriteClick}
                 >
-                    <svg className="offer__bookmark-icon" width="31" height="33">
-                      <use href="#icon-bookmark"></use>
-                    </svg>
-                    <span className="visually-hidden">
-                      {offer.isFavorite ? "In bookmarks" : "To bookmarks"}
-                    </span>
+                  <svg className="offer__bookmark-icon" width="31" height="33">
+                    <use xlinkHref="#icon-bookmark"></use>
+                  </svg>
+                  <span className="visually-hidden">To bookmarks</span>
                 </button>
               </div>
               <div className="offer__rating rating">
@@ -121,9 +100,15 @@ function OfferPage(): JSX.Element {
                 <span className="offer__rating-value rating__value">{offer.rating}</span>
               </div>
               <ul className="offer__features">
-                <li className="offer__feature offer__feature--entire">{offer.type}</li>
-                <li className="offer__feature offer__feature--bedrooms">{offer.bedrooms} Bedrooms</li>
-                <li className="offer__feature offer__feature--adults">Max {offer.maxAdults} adults</li>
+                <li className="offer__feature offer__feature--entire">
+                  {offer.type}
+                </li>
+                <li className="offer__feature offer__feature--bedrooms">
+                  {offer.bedrooms || 3} Bedrooms
+                </li>
+                <li className="offer__feature offer__feature--adults">
+                  Max {offer.maxAdults || 4} adults
+                </li>
               </ul>
               <div className="offer__price">
                 <b className="offer__price-value">&euro;{offer.price}</b>
@@ -132,37 +117,48 @@ function OfferPage(): JSX.Element {
               <div className="offer__inside">
                 <h2 className="offer__inside-title">What&apos;s inside</h2>
                 <ul className="offer__inside-list">
-                    {offer.goods.map((good) => <li key={good} className="offer__inside-item">{good}</li>)}
+                  {(offer.goods || []).map((item) => (
+                    <li key={item} className="offer__inside-item">
+                      {item}
+                    </li>
+                  ))}
                 </ul>
               </div>
               <div className="offer__host">
                 <h2 className="offer__host-title">Meet the host</h2>
                 <div className="offer__host-user user">
-                  <div className={`offer__avatar-wrapper ${offer.host.isPro ? 'offer__avatar-wrapper--pro' : ''} user__avatar-wrapper`}>
-                    <img className="offer__avatar user__avatar" src={offer.host.avatarUrl} width="74" height="74" alt="Host avatar" />
+                  <div className={`offer__avatar-wrapper offer__avatar-wrapper--pro user__avatar-wrapper ${offer.host?.isPro ? 'offer__avatar-wrapper--pro' : ''}`}>
+                    <img className="offer__avatar user__avatar" src={offer.host?.avatarUrl || '/img/avatar.svg'} width="74" height="74" alt="Host avatar" />
                   </div>
-                  <span className="offer__user-name">{offer.host.name}</span>
-                  {offer.host.isPro && <span className="offer__user-status">Pro</span>}
+                  <span className="offer__user-name">
+                    {offer.host?.name || 'Host'}
+                  </span>
+                  {offer.host?.isPro && (
+                    <span className="offer__user-status">
+                      Pro
+                    </span>
+                  )}
                 </div>
                 <div className="offer__description">
-                  <p className="offer__text">{offer.description}</p>
+                  <p className="offer__text">
+                    {offer.description || ''}
+                  </p>
                 </div>
               </div>
               <section className="offer__reviews reviews">
-                 <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">{currentReviews.length}</span></h2>
-                 <ReviewsList reviews={currentReviews} />
-                 <ReviewForm onSubmit={handleReviewSubmit} />
+                <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">{currentReviews.length}</span></h2>
+                <ReviewsList reviews={currentReviews} />
+                <ReviewForm onSubmit={handleReviewSubmit} />
               </section>
             </div>
           </div>
-          <section className="offer__map map">
-             <Map city={offer.city} points={[...nearbyOffers, offer]} selectedPoint={offer} />
-          </section>
+          <Map city={offer.city} points={mapPoints} selectedPoint={offer} />
         </section>
         <div className="container">
           <section className="near-places places">
             <h2 className="near-places__title">Other places in the neighbourhood</h2>
-            <CitiesCardList offersList={nearbyOffers} className="near-places__list places__list" />
+            <div className="near-places__list places__list">
+            </div>
           </section>
         </div>
       </main>
@@ -171,4 +167,3 @@ function OfferPage(): JSX.Element {
 }
 
 export { OfferPage };
-  

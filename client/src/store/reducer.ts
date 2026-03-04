@@ -1,9 +1,10 @@
 import { createReducer } from '@reduxjs/toolkit';
 import { OffersList, CityOffer } from '../types/offer';
 import { getCity } from '../utils';
-import { changeCity, offersCityList, requireAuthorization, setError, setOffersDataLoadingStatus } from './action';
+import { changeCity, offersCityList, requireAuthorization, setError, setOffersDataLoadingStatus, setUserData } from './action';
 import { AuthorizationStatus, CITIES_LOCATION } from '../const';
 import { AuthorizationStatusType } from '../types/authorization-status';
+import { UserData } from '../types/user-data';
 
 const defaultCity = getCity('Paris');
 
@@ -13,6 +14,7 @@ export type InitialState = {
     authorizationStatus: AuthorizationStatusType;
     error: string | null;
     isOffersDataLoading: boolean;
+    user: UserData | null;
 }
 
 const initialState: InitialState = {
@@ -21,6 +23,7 @@ const initialState: InitialState = {
     authorizationStatus: AuthorizationStatus.Unknown,
     error: null,
     isOffersDataLoading: false,
+    user: null,
 };
 
 const reducer = createReducer(initialState, (builder) => {
@@ -39,6 +42,9 @@ const reducer = createReducer(initialState, (builder) => {
     })
     .addCase(setOffersDataLoadingStatus, (state, action) => {
         state.isOffersDataLoading = action.payload;
+    })
+    .addCase(setUserData, (state, action) => {
+        state.user = action.payload;
     });
 });
 

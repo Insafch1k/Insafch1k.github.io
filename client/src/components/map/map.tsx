@@ -8,6 +8,7 @@ type MapProps = {
   city: CityOffer;
   points: (OffersList | FullOffer)[];
   selectedPoint?: OffersList | FullOffer;
+  className?: string;
 };
 
 const defaultCustomIcon = new Icon({
@@ -22,8 +23,8 @@ const currentCustomIcon = new Icon({
   iconAnchor: [20, 40]
 });
 
-function Map({ city, points, selectedPoint }: MapProps): JSX.Element {
-  const mapRef = useRef(null);
+function Map({ city, points, selectedPoint, className = 'map' }: MapProps): JSX.Element {
+  const mapRef = useRef<HTMLElement | null>(null);
   const map = useMap(mapRef, city);
 
   useEffect(() => {
@@ -57,7 +58,7 @@ function Map({ city, points, selectedPoint }: MapProps): JSX.Element {
     }
   }, [map, points, selectedPoint]);
 
-  return <div style={{height: '100%'}} ref={mapRef}></div>;
+  return <section className={className} ref={mapRef}></section>;
 }
 
 export { Map };

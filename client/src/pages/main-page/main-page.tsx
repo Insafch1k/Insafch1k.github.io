@@ -1,7 +1,5 @@
 import { JSX, useState } from 'react';
-import { Logo } from '../../components/logo/logo';
 import { CitiesCardList } from '../../components/cities-card-list/cities-card-list';
-import { Map } from '../../components/map/map';
 import { useAppSelector } from '../../hooks';
 import { CitiesList } from '../../components/cities-list/cities-list';
 import { getOffersByCity, sortOffersByType } from '../../utils';
@@ -9,6 +7,8 @@ import { SortOptions } from '../../components/sort-options/sort-options';
 import { SortOffer } from '../../types/sort';
 import { SortOffersType } from '../../const';
 import { OffersList, FullOffer } from '../../types/offer';
+import { Header } from '../../components/header/header';
+import { Map } from '../../components/map/map';
 
 function MainPage(): JSX.Element {
   const selectedCity = useAppSelector((state) => state.city);
@@ -16,8 +16,6 @@ function MainPage(): JSX.Element {
   const offersList = useAppSelector((state) => state.offers);
   
   const selectedCityOffers = getOffersByCity(selectedCity?.name, offersList);
-  
-  const favoriteCount = offersList.filter(offer => offer.isFavorite).length;
   
   const [activeSort, setActiveSort] = useState<SortOffer>(SortOffersType.Popular);
   const [selectedOffer, setSelectedOffer] = useState<OffersList | FullOffer | undefined>(undefined);
@@ -49,32 +47,7 @@ function MainPage(): JSX.Element {
         </svg>
       </div>
 
-      <header className="header">
-        <div className="container">
-          <div className="header__wrapper">
-            <div className="header__left">
-              <Logo />
-            </div>
-            <nav className="header__nav">
-              <ul className="header__nav-list">
-                <li className="header__nav-item user">
-                  <a className="header__nav-link header__nav-link--profile" href="#">
-                    <div className="header__avatar-wrapper user__avatar-wrapper">
-                    </div>
-                    <span className="header__user-name user__name">Myemail@gmail.com</span>
-                    <span className="header__favorite-count">{favoriteCount}</span>
-                  </a>
-                </li>
-                <li className="header__nav-item">
-                  <a className="header__nav-link" href="#">
-                    <span className="header__signout">Sign out</span>
-                  </a>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <main className="page__main page__main--index">
         <h1 className="visually-hidden">Cities</h1>
@@ -98,9 +71,9 @@ function MainPage(): JSX.Element {
 
             </section>
             <div className="cities__right-section">
-              <section className="cities__map map">
-                 {selectedCity && <Map city={selectedCity} points={sortedOffers} selectedPoint={selectedOffer} />}
-              </section>
+              {selectedCity && (
+                <Map className="cities__map map" city={selectedCity} points={selectedCityOffers} selectedPoint={selectedOffer} />
+              )}
             </div>
           </div>
         </div>

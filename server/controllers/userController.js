@@ -61,7 +61,13 @@ export const login = async (req, res, next) => {
    
       const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '24h' });
    
-      res.json({ token });
+      res.json({ 
+        token,
+        name: user.username,
+        email: user.email,
+        avatarUrl: user.avatar.startsWith('http') ? user.avatar : `${process.env.HOST}:${process.env.PORT || 5000}${user.avatar.startsWith('/') ? '' : '/'}${user.avatar}`,
+        isPro: user.userType === 'pro'
+      });
     } catch (error) {
       next(ApiError.internal('Ошибка авторизации'));
     }
@@ -84,9 +90,9 @@ export const checkAuth = (req, res) => {
    
     return res.json({
       id: user.id,
+      name: user.username,
       email: user.email,
-      username: user.username,
-      avatar: user.avatar,
+      avatarUrl: user.avatar.startsWith('http') ? user.avatar : `${process.env.HOST}:${process.env.PORT || 5000}${user.avatar.startsWith('/') ? '' : '/'}${user.avatar}`,
       isPro: user.userType === 'pro',
       token
     });

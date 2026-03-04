@@ -1,7 +1,7 @@
 import { JSX } from 'react';
-import { Logo } from '../../components/logo/logo';
 import { CitiesCard } from '../../components/cities-card/cities-card';
 import { useAppSelector } from '../../hooks'; 
+import { Header } from '../../components/header/header';
 
 function FavoritesPage(): JSX.Element {
   const offers = useAppSelector((state) => state.offers);
@@ -17,24 +17,7 @@ function FavoritesPage(): JSX.Element {
 
   return (
     <div className="page">
-      <header className="header">
-        <div className="container">
-          <div className="header__wrapper">
-            <div className="header__left"><Logo /></div>
-            <nav className="header__nav">
-              <ul className="header__nav-list">
-                <li className="header__nav-item user">
-                    <div className="header__nav-link header__nav-link--profile">
-                     <div className="header__avatar-wrapper user__avatar-wrapper"></div>
-                     <span className="header__user-name user__name">Myemail@gmail.com</span>
-                     <span className="header__favorite-count">{favoriteOffers.length}</span>
-                   </div>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <main className="page__main page__main--favorites">
         <div className="page__favorites-container container">
