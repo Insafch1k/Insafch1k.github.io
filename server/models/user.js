@@ -24,8 +24,6 @@ User.init({
   password: {
     type: DataTypes.STRING,
     allowNull: false,
-
-
   },
   userType: {
     type: DataTypes.ENUM,

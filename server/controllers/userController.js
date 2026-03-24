@@ -13,6 +13,10 @@ export const registration = async (req, res, next) => {
      return next(ApiError.badRequest('Некорректный email или password'));
    }
 
+   if (password.length < 6 || password.length > 12) {
+     return next(ApiError.badRequest('Пароль: от 6 до 12 символов'));
+   }
+
 
    const candidate = await User.findOne({ where: { email } });
    if (candidate) {
@@ -20,7 +24,7 @@ export const registration = async (req, res, next) => {
    }
 
 
-   const avatarImage = `/static/${req.file.filename}`;
+   const avatarImage = req.file ? `/static/${req.file.filename}` : null;
 
 
    const hashPassword = await bcrypt.hash(password, 5);
@@ -52,6 +56,10 @@ export const registration = async (req, res, next) => {
 export const login = async (req, res, next) => {
     try {
       const { email, password } = req.body;
+
+      if (!password || password.length < 6 || password.length > 12) {
+        return next(ApiError.badRequest('Пароль: от 6 до 12 символов'));
+      }
    
       const user = await User.findOne({ where: { email } });
       if (!user) return next(ApiError.badRequest('Пользователь не найден'));

@@ -1,0 +1,553 @@
+openapi: 3.0.0
+info:
+  title: Housing Rental API
+  version: 1.0.0
+  description: >
+    REST API сервиса аренды жилья. Реальные пути совпадают с
+    Express-приложением.
+
+    Создание предложения — POST /offers (multipart). В методичке может
+    встречаться POST /offer — это то же по смыслу, фактический маршрут /offers.
+servers:
+  - url: http://localhost:5000
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+    LoginBody:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        avatarUrl:
+          type: string
+        isPro:
+          type: boolean
+    AuthStateResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        avatarUrl:
+          type: string
+        isPro:
+          type: boolean
+        token:
+          type: string
+    RegisterResponse:
+      type: object
+      properties:
+        user:
+          type: object
+          properties:
+            id:
+              type: integer
+            email:
+              type: string
+            username:
+              type: string
+            avatarUrl:
+              type: string
+              nullable: true
+            isPro:
+              type: boolean
+    CommentBody:
+      type: object
+      required:
+        - comment
+        - rating
+      properties:
+        comment:
+          type: string
+          minLength: 5
+          maxLength: 1024
+        rating:
+          type: number
+          minimum: 1
+          maximum: 5
+    OfferCard:
+      type: object
+      description: Адаптированная карточка для списка (см. GET /offers)
+tags:
+  - name: Users
+  - name: Offers
+  - name: Reviews
+paths:
+  /register:
+    post:
+      summary: Регистрация пользователя
+      description: multipart/form-data; avatar необязателен (по ТЗ).
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+                - userType
+                - username
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+                  minLength: 6
+                  maxLength: 12
+                userType:
+                  type: string
+                  enum:
+                    - normal
+                    - pro
+                username:
+                  type: string
+                  minLength: 1
+                  maxLength: 15
+                avatar:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: Пользователь создан
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RegisterResponse"
+        "400":
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Внутренняя ошибка
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /login:
+    post:
+      summary: Авторизация пользователя
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginBody"
+            example:
+              email: Lyric14@gmail.com
+              password: _qO5mT6zLW
+      responses:
+        "200":
+          description: Успешный вход, JWT и данные профиля
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "400":
+          description: Неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Внутренняя ошибка
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    get:
+      summary: Проверка состояния авторизации
+      description: В заголовке Authorization передаётся Bearer JWT; при успехе
+        выдаётся новый токен и профиль.
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Пользователь авторизован
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthStateResponse"
+        "401":
+          description: Нет или неверный токен
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /logout:
+    delete:
+      summary: Выход из приложения
+      tags:
+        - Users
+      responses:
+        "204":
+          description: Успешный выход (тело пустое)
+        "500":
+          description: Внутренняя ошибка
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /offers:
+    get:
+      summary: Список предложений по аренде
+      description: Для авторизованного клиента (Bearer) поле isFavorite персональное;
+        для гостя — всегда false.
+      tags:
+        - Offers
+      security: []
+      parameters:
+        - name: Authorization
+          in: header
+          required: false
+          schema:
+            type: string
+          description: Опционально заголовок Authorization Bearer JWT
+      responses:
+        "200":
+          description: Массив карточек
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OfferCard"
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: Создание нового предложения
+      description: |
+        multipart/form-data. Обязательно поле previewImage (файл).
+        Дополнительно до 6 файлов в поле photos.
+      tags:
+        - Offers
+      security: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - title
+                - description
+                - city
+                - price
+                - rooms
+                - guests
+                - previewImage
+                - userId
+              properties:
+                title:
+                  type: string
+                  minLength: 10
+                  maxLength: 100
+                description:
+                  type: string
+                  minLength: 20
+                  maxLength: 1024
+                publishDate:
+                  type: string
+                  format: date
+                city:
+                  type: string
+                  enum:
+                    - Paris
+                    - Cologne
+                    - Brussels
+                    - Amsterdam
+                    - Hamburg
+                    - Dusseldorf
+                isPremium:
+                  type: boolean
+                rating:
+                  type: number
+                  minimum: 1
+                  maximum: 5
+                type:
+                  type: string
+                  enum:
+                    - apartment
+                    - house
+                    - room
+                    - hotel
+                rooms:
+                  type: integer
+                  minimum: 1
+                  maximum: 8
+                guests:
+                  type: integer
+                  minimum: 1
+                  maximum: 10
+                price:
+                  type: integer
+                  minimum: 100
+                  maximum: 100000
+                features:
+                  type: string
+                  description: JSON-строка массива удобств из допустимого перечня (Breakfast, Air
+                    conditioning, …)
+                commentsCount:
+                  type: integer
+                latitude:
+                  type: number
+                longitude:
+                  type: number
+                userId:
+                  type: integer
+                  description: id автора (пользователя)
+                previewImage:
+                  type: string
+                  format: binary
+                photos:
+                  type: array
+                  maxItems: 6
+                  items:
+                    type: string
+                    format: binary
+            examples:
+              generated:
+                summary: Сгенерированный пример (только текстовые поля)
+                value:
+                  title: carbo custodia arbitro aranea iste ventus aurum accusator arca caries
+                    sonitus tergo alii caritas ull
+                  description: Colligo statim incidunt officiis soleo atque aeger vomito minus
+                    recusandae. Degusto adsum sustineo strenuus nostrum
+                    coadunatio studio delego. Natus numquam summa audeo vestrum
+                    voluptatem tunc. Talis depromo solitudo canis cubicularis
+                    barba clamo cresco verbera abutor. Ceno temptatio sufficio.
+                  publishDate: 2026-03-24
+                  city: Amsterdam
+                  isPremium: false
+                  rating: 1.7
+                  type: room
+                  rooms: 6
+                  guests: 4
+                  price: 9529
+                  features: '["Breakfast","Air conditioning","Laptop friendly workspace"]'
+                  commentsCount: 41
+                  latitude: 2.9057
+                  longitude: 62.7681
+                  userId: 6
+      responses:
+        "201":
+          description: Предложение создано (тело — модель из БД)
+        "400":
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Внутренняя ошибка
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /offers/{id}:
+    get:
+      summary: Детальная информация о предложении
+      tags:
+        - Offers
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: Authorization
+          in: header
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Полное предложение (адаптированный DTO)
+        "404":
+          description: Не найдено
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Внутренняя ошибка
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /favorite:
+    get:
+      summary: Список избранных предложений текущего пользователя
+      tags:
+        - Offers
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Массив карточек избранного
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OfferCard"
+        "401":
+          description: Не авторизован
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Внутренняя ошибка
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /favorite/{offerId}/{status}:
+    post:
+      summary: Добавить или убрать предложение из избранного
+      description: status=1 — в избранное, иначе (например 0) — убрать.
+      tags:
+        - Offers
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: offerId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: status
+          in: path
+          required: true
+          schema:
+            type: string
+            enum:
+              - "0"
+              - "1"
+      responses:
+        "200":
+          description: Обновлённая сущность offer (сырой ответ БД)
+        "401":
+          description: Не авторизован
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Предложение не найдено
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Внутренняя ошибка
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /comments/{offerId}:
+    get:
+      summary: Список комментариев к предложению
+      tags:
+        - Reviews
+      parameters:
+        - name: offerId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Массив отзывов (адаптированный DTO)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        "500":
+          description: Внутренняя ошибка
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: Добавить комментарий к предложению
+      tags:
+        - Reviews
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: offerId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommentBody"
+      responses:
+        "201":
+          description: Комментарий создан
+        "400":
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Не авторизован
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Внутренняя ошибка
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"

@@ -8,6 +8,8 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 import { Review } from './models/review.js';
 import { initAssociations } from './models/associations.js';
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yamljs';
 
 dotenv.config();
 
@@ -20,12 +22,15 @@ const app = express();
 
 const clientPublicImg = path.resolve(__dirname, '..', 'client', 'public', 'img');
 const serverStaticDir = path.resolve(__dirname, 'static');
+const swaggerPath = path.resolve(__dirname, '..', 'docs', 'swagger.yaml');
+const swaggerDocument = YAML.load(swaggerPath);
 
 app.use(cors());
 app.use(express.json());
 app.use('/static', express.static(serverStaticDir));
 app.use('/static', express.static(clientPublicImg));
 app.use('/img', express.static(clientPublicImg));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/', router);
 app.use(errorMiddleware);
 

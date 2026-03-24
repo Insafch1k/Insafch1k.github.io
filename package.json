@@ -1,0 +1,16 @@
+{
+  "name": "rpi2025-2026",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "swagger:gen-examples": "node scripts/gen-swagger-examples.js"
+  },
+  "dependencies": {
+    "swagger-ui-express": "^5.0.1",
+    "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^10.4.0",
+    "yaml": "^2.8.3"
+  }
+}
