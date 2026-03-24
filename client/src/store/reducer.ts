@@ -1,7 +1,7 @@
 import { createReducer } from '@reduxjs/toolkit';
 import { OffersList, CityOffer } from '../types/offer';
 import { getCity } from '../utils';
-import { changeCity, offersCityList, requireAuthorization, setError, setOffersDataLoadingStatus, setUserData } from './action';
+import { changeCity, offersCityList, requireAuthorization, setError, setOffersDataLoadingStatus, setUserData, updateOfferFavorite } from './action';
 import { AuthorizationStatus, CITIES_LOCATION } from '../const';
 import { AuthorizationStatusType } from '../types/authorization-status';
 import { UserData } from '../types/user-data';
@@ -45,6 +45,13 @@ const reducer = createReducer(initialState, (builder) => {
     })
     .addCase(setUserData, (state, action) => {
         state.user = action.payload;
+    })
+    .addCase(updateOfferFavorite, (state, action) => {
+        const { id, isFavorite } = action.payload;
+        const offer = state.offers.find((o) => o.id === id);
+        if (offer) {
+            offer.isFavorite = isFavorite;
+        }
     });
 });
 

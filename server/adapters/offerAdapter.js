@@ -9,7 +9,7 @@ const cityCoordinates = {
   
   const getBaseUrl = () => `${process.env.HOST}:${process.env.PORT || 5000}`;
   
-  const adaptOfferToClient = (offer) => {
+  const adaptOfferToClient = (offer, options = {}) => {
     const baseUrl = getBaseUrl();
     const cityLocation = cityCoordinates[offer.city];
     let previewImage = offer.previewImage;
@@ -32,16 +32,16 @@ const cityCoordinates = {
         longitude: offer.longitude,
         zoom: 8
       } : { latitude: 0, longitude: 0, zoom: 8 },
-      isFavorite: offer.isFavorite,
+      isFavorite: Boolean(options.isFavorite),
       isPremium: offer.isPremium,
       rating: parseFloat(offer.rating),
       previewImage
     };
   };
   
-  const adaptFullOfferToClient = (offer) => {
+  const adaptFullOfferToClient = (offer, options = {}) => {
     const baseUrl = getBaseUrl();
-    const baseOffer = adaptOfferToClient(offer);
+    const baseOffer = adaptOfferToClient(offer, options);
     
     let images = [];
     if (offer.photos && Array.isArray(offer.photos)) {

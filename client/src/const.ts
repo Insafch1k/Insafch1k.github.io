@@ -1,9 +1,9 @@
 export enum AppRoute {
   Login = '/login',
   Favorites = '/favorites',
-  Offer = '/offer/:id',
+  Offer = '/offer',
   Main = '/',
-  NotFound = '*'
+  NotFound = '/404',
 }
 
 export enum AuthorizationStatus {
@@ -29,9 +29,13 @@ export const CITIES_LOCATION = [
 ] as const;
 
 export const APIRoute = {
-    Offers : '/offers',
-    Login : '/login',
-    Logout : '/logout'
+  Offers: '/offers',
+  Offer: (id: string) => `/offers/${id}`,
+  Comments: (offerId: string) => `/comments/${offerId}`,
+  Login: '/login',
+  Logout: '/logout',
+  Favorite: '/favorite',
+  FavoriteStatus: (offerId: string, status: '0' | '1') => `/favorite/${offerId}/${status}`,
 };
 
 export const TIMEOUT_SHOW_ERROR = 2000;

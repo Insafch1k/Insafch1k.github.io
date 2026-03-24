@@ -1,12 +1,25 @@
 import { Offer } from '../models/offer.js'
 import ApiError from '../error/ApiError.js';
 import { User } from '../models/user.js';
+import { UserFavorite } from '../models/userFavorite.js';
 import { adaptOfferToClient, adaptFullOfferToClient } from '../adapters/offerAdapter.js';
 
 async function getAllOffers(req, res, next) {
     try {
         const offers = await Offer.findAll();
-        const adaptedOffers = offers.map(adaptOfferToClient);
+        let favoriteIdSet = new Set();
+        if (req.user) {
+            const rows = await UserFavorite.findAll({
+                where: { UserId: req.user.id },
+                attributes: ['OfferId'],
+            });
+            favoriteIdSet = new Set(rows.map((row) => String(row.OfferId)));
+        }
+        const adaptedOffers = offers.map((offer) =>
+            adaptOfferToClient(offer, {
+                isFavorite: req.user ? favoriteIdSet.has(String(offer.id)) : false,
+            }),
+        );
         res.status(200).json(adaptedOffers);
     } catch (error) {
         next(ApiError.internal('Не удалось получить список'))
@@ -19,7 +32,7 @@ export async function createOffer(req, res, next) {
     try {
       const {
         title, description, publishDate, city,
-        isPremium, isFavorite, rating, type, rooms, guests, price,
+        isPremium, rating, type, rooms, guests, price,
         features, commentsCount, latitude, longitude, userId
       } = req.body;
    
@@ -56,7 +69,7 @@ export async function createOffer(req, res, next) {
         previewImage: previewImagePath,
         photos: processedPhotos,
         isPremium,
-        isFavorite,
+        isFavorite: false,
         rating,
         type,
         rooms,
@@ -85,10 +98,18 @@ async function getFullOffer(req, res, next) {
       });
 
       if (!offer) {
-          return next(ApiError.badRequest('Offer not found'));
+          return next(ApiError.notFound('Offer not found'));
       }
 
-      const adaptedOffer = adaptFullOfferToClient(offer);
+      let isFavorite = false;
+      if (req.user) {
+        const row = await UserFavorite.findOne({
+          where: { UserId: req.user.id, OfferId: offer.id },
+        });
+        isFavorite = Boolean(row);
+      }
+
+      const adaptedOffer = adaptFullOfferToClient(offer, { isFavorite });
       res.json(adaptedOffer);
   } catch (error) {
       next(ApiError.internal('Не удалось получить данные предложения: ' + error.message));
@@ -97,8 +118,10 @@ async function getFullOffer(req, res, next) {
 
 async function getFavoriteOffers(req, res, next) {
     try {
-        const offers = await Offer.findAll({ where: { isFavorite: true } });
-        const adaptedOffers = offers.map(adaptOfferToClient);
+        const offers = await req.user.getFavoriteOffers();
+        const adaptedOffers = offers.map((offer) =>
+            adaptOfferToClient(offer, { isFavorite: true }),
+        );
         res.status(200).json(adaptedOffers);
     } catch (error) {
         next(ApiError.internal('Не удалось получить избранные предложения'));
@@ -108,15 +131,23 @@ async function getFavoriteOffers(req, res, next) {
 const toggleFavorite = async (req, res, next) => {
     try {
       const { offerId, status } = req.params;
-  
+      const userId = req.user.id;
+
       const offer = await Offer.findByPk(offerId);
       if (!offer) {
       return next(ApiError.notFound('Предложение не найдено'));
       }
-      
-      offer.isFavorite = status === '1';
-      await offer.save();
-      
+
+      if (status === '1') {
+        await UserFavorite.findOrCreate({
+          where: { UserId: userId, OfferId: offer.id },
+        });
+      } else {
+        await UserFavorite.destroy({
+          where: { UserId: userId, OfferId: offer.id },
+        });
+      }
+
       res.json(offer);
       
   } catch (error) {

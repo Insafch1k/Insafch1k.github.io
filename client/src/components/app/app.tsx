@@ -8,6 +8,7 @@ import { OfferPage } from "../../pages/offer-page/offer-page";
 import { NotFoundPage } from "../../pages/not-found-page/not-found-page";
 import { useAppSelector } from '../../hooks';
 import { LoadingScreen } from '../loading-screen/loading-screen';
+import { PrivateRoute } from '../private-route/private-route';
 
 function App(): JSX.Element {
   const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
@@ -32,11 +33,19 @@ function App(): JSX.Element {
         />
         <Route
           path={AppRoute.Favorites}
-          element={<FavoritesPage />} 
+          element={(
+            <PrivateRoute authorizationStatus={authorizationStatus}>
+              <FavoritesPage />
+            </PrivateRoute>
+          )}
         />
         <Route
           path={`${AppRoute.Offer}/:id`}
           element={<OfferPage />}
+        />
+        <Route
+          path={AppRoute.NotFound}
+          element={<NotFoundPage />}
         />
         <Route
           path="*"

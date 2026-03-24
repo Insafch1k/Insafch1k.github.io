@@ -10,7 +10,7 @@ class Review extends Model {}
 
 Review.init({
   text: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: false,
     validate: { len: [5, 1024] }
   },

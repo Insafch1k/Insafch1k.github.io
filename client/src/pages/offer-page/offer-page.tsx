@@ -1,47 +1,112 @@
-import { JSX, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { NotFoundPage } from '../not-found-page/not-found-page';
+import { JSX, useEffect, useMemo, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ReviewForm } from '../../components/review-form/review-form';
 import { ReviewsList } from '../../components/reviews-list/reviews-list';
-import { reviews as initialReviews } from '../../mocks/reviews'; 
-import { useAppDispatch, useAppSelector } from '../../hooks'; 
-import { toggleFavorite } from '../../store/action'; 
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { toggleFavoriteAction, postCommentAction } from '../../store/api-actions';
 import { Header } from '../../components/header/header';
 import { Map } from '../../components/map/map';
+import { LoadingScreen } from '../../components/loading-screen/loading-screen';
+import { CitiesCard } from '../../components/cities-card/cities-card';
+import { AppRoute, APIRoute, AuthorizationStatus } from '../../const';
+import { FullOffer, OffersList } from '../../types/offer';
+import { Review } from '../../types/review';
+import { api } from '../../store';
 
 function OfferPage(): JSX.Element {
   const params = useParams();
+  const id = params.id;
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  
+  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
   const offers = useAppSelector((state) => state.offers);
-  const foundOffer = offers.find((item) => item.id === params.id);
-  
-  // Type assertion to FullOffer since we expect full details for the current offer page
-  // In a real app, you might fetch full details separately
-  const offer = foundOffer as unknown as FullOffer;
-  
-  const [currentReviews, setCurrentReviews] = useState(initialReviews);
 
-  if (!foundOffer) {
-    return <NotFoundPage />;
-  }
+  const [offer, setOffer] = useState<FullOffer | null>(null);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const ratingWidth = Math.round(offer.rating) * 20 + '%';
-  const nearbyOffers = offers.filter(o => o.id !== offer.id).slice(0, 3);
-  const mapPoints = [foundOffer, ...nearbyOffers];
+  useEffect(() => {
+    if (!id) {
+      navigate(AppRoute.NotFound, { replace: true });
+      return;
+    }
 
-  const handleReviewSubmit = (rating: number, comment: string) => {
-      const newReview = {
-        id: String(Date.now()),
-        user: { id: 'user-999', name: 'Me', avatarUrl: '/img/avatar-max.jpg', isPro: false },
-        rating, comment, date: new Date().toISOString()
+    let cancelled = false;
+
+    const load = async () => {
+      setIsLoading(true);
+      try {
+        const offerRes = await api.get<FullOffer>(APIRoute.Offer(id), { skipGlobalErrorHandler: true });
+        if (cancelled) {
+          return;
+        }
+        setOffer(offerRes.data);
+        try {
+          const reviewsRes = await api.get<Review[]>(APIRoute.Comments(id), { skipGlobalErrorHandler: true });
+          if (!cancelled) {
+            setReviews(reviewsRes.data);
+          }
+        } catch {
+          if (!cancelled) {
+            setReviews([]);
+          }
+        }
+      } catch {
+        if (!cancelled) {
+          navigate(AppRoute.NotFound, { replace: true });
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
     };
-    setCurrentReviews([newReview, ...currentReviews]);
+
+    void load();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [id, navigate]);
+
+  const offerInStore = useMemo(
+    () => (id ? offers.find((o) => o.id === id) : undefined),
+    [id, offers],
+  );
+
+  const isFavorite = offerInStore?.isFavorite ?? offer?.isFavorite ?? false;
+
+  const handleReviewSubmit = async (rating: number, comment: string) => {
+    if (!id) {
+      return;
+    }
+    try {
+      const newReview = await dispatch(postCommentAction({ offerId: id, comment, rating })).unwrap();
+      setReviews((prev) => [newReview, ...prev]);
+    } catch {
+    }
   };
 
   const handleFavoriteClick = () => {
-    dispatch(toggleFavorite(offer.id));
+    if (!offer) {
+      return;
+    }
+    if (authorizationStatus !== AuthorizationStatus.Auth) {
+      navigate(AppRoute.Login);
+      return;
+    }
+    void dispatch(toggleFavoriteAction(offer.id));
   };
+
+  if (isLoading || !offer) {
+    return <LoadingScreen />;
+  }
+
+  const ratingWidth = Math.round(offer.rating) * 20 + '%';
+  const nearbyOffers: OffersList[] = offers.filter(
+    (o) => o.id !== offer.id && o.city.name === offer.city.name,
+  ).slice(0, 3);
+  const mapPoints: OffersList[] = [offer as OffersList, ...nearbyOffers];
 
   return (
     <div className="page">
@@ -65,7 +130,7 @@ function OfferPage(): JSX.Element {
         <section className="offer">
           <div className="offer__gallery-container container">
             <div className="offer__gallery">
-              {(offer.images || [offer.previewImage]).slice(0, 6).map((item) => (
+              {(offer.images?.length ? offer.images : [offer.previewImage]).slice(0, 6).map((item) => (
                 <div key={item} className="offer__image-wrapper">
                   <img className="offer__image" src={item} alt="Photo studio" />
                 </div>
@@ -81,10 +146,10 @@ function OfferPage(): JSX.Element {
               )}
               <div className="offer__name-wrapper">
                 <h1 className="offer__name">{offer.title}</h1>
-                <button 
-                    className={`offer__bookmark-button button ${offer.isFavorite ? 'offer__bookmark-button--active' : ''}`} 
-                    type="button"
-                    onClick={handleFavoriteClick}
+                <button
+                  className={`offer__bookmark-button button ${isFavorite ? 'offer__bookmark-button--active' : ''}`}
+                  type="button"
+                  onClick={handleFavoriteClick}
                 >
                   <svg className="offer__bookmark-icon" width="31" height="33">
                     <use xlinkHref="#icon-bookmark"></use>
@@ -104,10 +169,10 @@ function OfferPage(): JSX.Element {
                   {offer.type}
                 </li>
                 <li className="offer__feature offer__feature--bedrooms">
-                  {offer.bedrooms || 3} Bedrooms
+                  {offer.bedrooms} Bedrooms
                 </li>
                 <li className="offer__feature offer__feature--adults">
-                  Max {offer.maxAdults || 4} adults
+                  Max {offer.maxAdults} adults
                 </li>
               </ul>
               <div className="offer__price">
@@ -146,18 +211,23 @@ function OfferPage(): JSX.Element {
                 </div>
               </div>
               <section className="offer__reviews reviews">
-                <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">{currentReviews.length}</span></h2>
-                <ReviewsList reviews={currentReviews} />
-                <ReviewForm onSubmit={handleReviewSubmit} />
+                <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">{reviews.length}</span></h2>
+                <ReviewsList reviews={reviews} />
+                {authorizationStatus === AuthorizationStatus.Auth && (
+                  <ReviewForm onSubmit={handleReviewSubmit} />
+                )}
               </section>
             </div>
           </div>
-          <Map city={offer.city} points={mapPoints} selectedPoint={offer} />
+          <Map city={offer.city} points={mapPoints} selectedPoint={offer as OffersList} />
         </section>
         <div className="container">
           <section className="near-places places">
             <h2 className="near-places__title">Other places in the neighbourhood</h2>
             <div className="near-places__list places__list">
+              {nearbyOffers.map((nearOffer) => (
+                <CitiesCard key={nearOffer.id} offer={nearOffer} cardType="near" />
+              ))}
             </div>
           </section>
         </div>

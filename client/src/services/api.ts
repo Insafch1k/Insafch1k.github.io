@@ -44,11 +44,12 @@ export const createAPI = (): AxiosInstance => {
     api.interceptors.response.use(
         (response) => response,
         (error: AxiosError<DetailMessageType>) => {
-            if (error.response && shouldDisplayError(error.response)) {
+            const skip = error.config?.skipGlobalErrorHandler;
+            if (!skip && error.response && shouldDisplayError(error.response)) {
                 const detailMessage = (error.response.data);
                 processErrorHandle(detailMessage.message);
             }
-            
+
             throw error;
         }
     );

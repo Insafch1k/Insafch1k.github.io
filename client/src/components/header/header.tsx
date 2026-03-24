@@ -33,7 +33,7 @@ function Header(): JSX.Element {
                                 <div className="header__avatar-wrapper user__avatar-wrapper">
                                     <img className="header__avatar user__avatar" src={user.avatarUrl} width="20" height="20" alt="User avatar" />
                                 </div>
-                                <span className="header__user-name user__name">{user.email}</span>
+                                <span className="header__user-name user__name">{user.name}</span>
                                 <span className="header__favorite-count">{favoriteCount}</span>
                             </Link>
                         </li>

@@ -1,9 +1,10 @@
 import { JSX, MouseEvent } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import classNames from 'classnames';
 import { OffersList } from '../../types/offer';
-import { useAppDispatch } from '../../hooks';
-import { toggleFavorite } from '../../store/action';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { toggleFavoriteAction } from '../../store/api-actions';
+import { AppRoute, AuthorizationStatus } from '../../const';
 
 type CitiesCardProps = {
   offer: OffersList;
@@ -13,6 +14,8 @@ type CitiesCardProps = {
 
 function CitiesCard({ offer, cardType = 'cities', onHover }: CitiesCardProps): JSX.Element {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
   const { id, title, type, price, previewImage, isFavorite, isPremium, rating } = offer;
   const ratingWidth = Math.round(rating) * 20 + '%';
 
@@ -25,8 +28,12 @@ function CitiesCard({ offer, cardType = 'cities', onHover }: CitiesCardProps): J
   };
 
   const handleFavoriteClick = (evt: MouseEvent<HTMLButtonElement>) => {
-    evt.preventDefault(); 
-    dispatch(toggleFavorite(id));
+    evt.preventDefault();
+    if (authorizationStatus !== AuthorizationStatus.Auth) {
+      navigate(AppRoute.Login);
+      return;
+    }
+    void dispatch(toggleFavoriteAction(id));
   };
 
   return (
@@ -41,7 +48,7 @@ function CitiesCard({ offer, cardType = 'cities', onHover }: CitiesCardProps): J
         </div>
       )}
       <div className={`${cardType}__image-wrapper place-card__image-wrapper`}>
-        <Link to={`/offer/${id}`}>
+        <Link to={`${AppRoute.Offer}/${id}`}>
           <img className="place-card__image" src={previewImage} width="260" height="200" alt="Place image" />
         </Link>
       </div>
@@ -73,7 +80,7 @@ function CitiesCard({ offer, cardType = 'cities', onHover }: CitiesCardProps): J
           </div>
         </div>
         <h2 className="place-card__name">
-          <Link to={`/offer/${id}`}>{title}</Link>
+          <Link to={`${AppRoute.Offer}/${id}`}>{title}</Link>
         </h2>
         <p className="place-card__type">{type}</p>
       </div>

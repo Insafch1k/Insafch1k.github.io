@@ -6,8 +6,8 @@ import { router } from './routes/index.js'
 import errorMiddleware from './middleware/ErrorHandlingMiddleware.js'
 import { fileURLToPath } from 'url';
 import path from 'path';
-import { Review } from './models/review.js'; 
-
+import { Review } from './models/review.js';
+import { initAssociations } from './models/associations.js';
 
 dotenv.config();
 
@@ -18,16 +18,23 @@ const PORT = process.env.PORT || 5000;
 
 const app = express();
 
+const clientPublicImg = path.resolve(__dirname, '..', 'client', 'public', 'img');
+const serverStaticDir = path.resolve(__dirname, 'static');
+
 app.use(cors());
 app.use(express.json());
-app.use('/static', express.static(path.resolve(__dirname, 'static')));
+app.use('/static', express.static(serverStaticDir));
+app.use('/static', express.static(clientPublicImg));
+app.use('/img', express.static(clientPublicImg));
 app.use('/', router);
 app.use(errorMiddleware);
 
 const start = async () => {
     try {
         await sequelize.authenticate();
+        initAssociations();
         await sequelize.sync();
+        await Review.sync({ alter: true });
         app.listen(PORT, () => console.log(`Сервер запущен на порте ${PORT}`));
     } catch (e) {
         console.log(e);

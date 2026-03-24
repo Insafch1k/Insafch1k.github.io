@@ -11,9 +11,10 @@ export const offersCityList = createAction('offers/offersCityList', (offers: Off
   payload: offers
 }));
 
-export const toggleFavorite = createAction('offers/toggleFavorite', (offerId: string) => ({
-  payload: offerId
-}));
+export const updateOfferFavorite = createAction(
+  'offers/updateOfferFavorite',
+  (payload: { id: string; isFavorite: boolean }) => ({ payload })
+);
 
 export const requireAuthorization = createAction<AuthorizationStatusType>('user/requireAuthorization');
 

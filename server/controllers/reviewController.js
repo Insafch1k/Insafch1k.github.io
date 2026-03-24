@@ -23,6 +23,13 @@ const addReview = async (req, res, next) => {
     res.status(201).json(review);
   } catch (error) {
     console.error(error);
+    if (error.name === 'SequelizeValidationError' && error.errors?.length) {
+      return next(ApiError.badRequest(error.errors.map((e) => e.message).join('; ')));
+    }
+    const detail = error.parent?.detail || error.message;
+    if (detail) {
+      return next(ApiError.badRequest(detail));
+    }
     next(ApiError.badRequest('Ошибка при добавлении комментария'));
   }
 };
