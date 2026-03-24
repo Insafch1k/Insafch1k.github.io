@@ -32,10 +32,10 @@ function NotFoundPage() {
       <main className="page__main">
         <div className="container">
           <section className="page__404" style={{ textAlign: 'center', padding: '100px 0' }}>
-            <h1>404 — страница не найдена</h1>
+            <h1>PAGE NOT FOUND</h1>
             <p>Запрашиваемый адрес не существует или объект был удалён.</p>
             <p>
-              <Link to={AppRoute.Main}>Перейти на главную</Link>
+              <Link to={AppRoute.Main}>Перейдите на главную страницу</Link>
             </p>
           </section>
         </div>

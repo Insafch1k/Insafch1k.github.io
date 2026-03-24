@@ -35,7 +35,7 @@ function LoadingScreen(): JSX.Element {
         color: '#555',
         margin: 0
       }}>
-        Loading...
+        Loading ...
       </p>
     </div>
   );
