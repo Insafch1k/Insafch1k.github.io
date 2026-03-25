@@ -1,0 +1,7 @@
+.cities__right-section--no-places img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+

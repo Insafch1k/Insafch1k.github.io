@@ -9,6 +9,7 @@ import { SortOffersType } from '../../const';
 import { OffersList, FullOffer } from '../../types/offer';
 import { Header } from '../../components/header/header';
 import { Map } from '../../components/map/map';
+import './no-places.css';
 
 function MainPage(): JSX.Element {
   const selectedCity = useAppSelector((state) => state.city);
@@ -16,6 +17,7 @@ function MainPage(): JSX.Element {
   const offersList = useAppSelector((state) => state.offers);
   
   const selectedCityOffers = getOffersByCity(selectedCity?.name, offersList);
+  const isEmptyCity = selectedCityOffers.length === 0;
   
   const [activeSort, setActiveSort] = useState<SortOffer>(SortOffersType.Popular);
   const [selectedOffer, setSelectedOffer] = useState<OffersList | FullOffer | undefined>(undefined);
@@ -33,7 +35,7 @@ function MainPage(): JSX.Element {
 
   return (
     <div className="page page--gray page--main">
-      <div style={{ display: 'none' }}>
+      <div hidden>
         <svg xmlns="http://www.w3.org/2000/svg">
           <symbol id="icon-arrow-select" viewBox="0 0 7 4">
             <path fillRule="evenodd" clipRule="evenodd" d="M0 0l3.5 2.813L7 0v1.084L3.5 4 0 1.084V0z"></path>
@@ -57,22 +59,48 @@ function MainPage(): JSX.Element {
           </section>
         </div>
         <div className="cities">
-          <div className="cities__places-container container">
-            <section className="cities__places places">
-              <h2 className="visually-hidden">Places</h2>
-              <b className="places__found">{selectedCityOffers.length} places to stay in {selectedCity?.name}</b>
-              
-              <SortOptions activeSorting={activeSort} onChange={(newSorting) => setActiveSort(newSorting)} />
-              
-              <CitiesCardList 
-                  offersList={sortedOffers} 
-                  onListItemHover={handleListItemHover}
-              />
+          <div className={`cities__places-container ${isEmptyCity ? 'cities__places-container--empty' : ''} container`}>
+            {isEmptyCity ? (
+              <section className="cities__no-places">
+                <div className="cities__status-wrapper tabs__content">
+                  <b className="cities__status">No places to stay available</b>
+                  <p className="cities__status-description">
+                    We could not find any property available at the moment in {selectedCity?.name}
+                  </p>
+                </div>
+              </section>
+            ) : (
+              <section className="cities__places places">
+                <h2 className="visually-hidden">Places</h2>
+                <b className="places__found">
+                  {selectedCityOffers.length} places to stay in {selectedCity?.name}
+                </b>
 
-            </section>
-            <div className="cities__right-section">
-              {selectedCity && (
-                <Map className="cities__map map" city={selectedCity} points={selectedCityOffers} selectedPoint={selectedOffer} />
+                <SortOptions
+                  activeSorting={activeSort}
+                  onChange={(newSorting) => setActiveSort(newSorting)}
+                />
+
+                <CitiesCardList offersList={sortedOffers} onListItemHover={handleListItemHover} />
+              </section>
+            )}
+
+            <div
+              className={`cities__right-section ${
+                isEmptyCity ? 'cities__right-section--no-places' : ''
+              }`}
+            >
+              {isEmptyCity ? (
+                <img src="img/no-places.png" alt="No places to stay available" />
+              ) : (
+                selectedCity && (
+                  <Map
+                    className="cities__map map"
+                    city={selectedCity}
+                    points={selectedCityOffers}
+                    selectedPoint={selectedOffer}
+                  />
+                )
               )}
             </div>
           </div>

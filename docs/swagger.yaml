@@ -89,7 +89,7 @@ components:
           maximum: 5
     OfferCard:
       type: object
-      description: Адаптированная карточка для списка 
+      description: Адаптированная карточка для списка
 tags:
   - name: Users
   - name: Offers
@@ -162,8 +162,8 @@ paths:
             schema:
               $ref: "#/components/schemas/LoginBody"
             example:
-              email: Lyric14@gmail.com
-              password: _qO5mT6zLW
+              email: Krista.Hayes@hotmail.com
+              password: qYNpCjFyd0
       responses:
         "200":
           description: Успешный вход, JWT и данные профиля
@@ -338,31 +338,30 @@ paths:
                     format: binary
             examples:
               generated:
-                summary: Пример (только текстовые поля)
+                summary: Сгенерированный пример (только текстовые поля)
                 value:
-                  title: carbo custodia arbitro aranea iste ventus aurum accusator arca caries
-                    sonitus tergo alii caritas ull
-                  description: Colligo statim incidunt officiis soleo atque aeger vomito minus
-                    recusandae. Degusto adsum sustineo strenuus nostrum
-                    coadunatio studio delego. Natus numquam summa audeo vestrum
-                    voluptatem tunc. Talis depromo solitudo canis cubicularis
-                    barba clamo cresco verbera abutor. Ceno temptatio sufficio.
+                  title: comitatus tui utroque ater bibo benigne in repudiandae terror accusantium
+                    comes coma angulus adipisc
+                  description: Demergo subito ventosus praesentium ipsam. Ratione comitatus atque
+                    vorago civis possimus thorax vix. Antea utique repellendus
+                    debitis perferendis arbitro incidunt. Volup decet vulnus
+                    vesco tersus tenax vaco crur casus. Eius decet vir.
                   publishDate: 2026-03-24
-                  city: Amsterdam
+                  city: Cologne
                   isPremium: false
-                  rating: 1.7
-                  type: room
-                  rooms: 6
-                  guests: 4
-                  price: 9529
+                  rating: 4.7
+                  type: hotel
+                  rooms: 5
+                  guests: 8
+                  price: 9283
                   features: '["Breakfast","Air conditioning","Laptop friendly workspace"]'
-                  commentsCount: 41
-                  latitude: 2.9057
-                  longitude: 62.7681
-                  userId: 6
+                  commentsCount: 20
+                  latitude: 60.6362
+                  longitude: 107.1139
+                  userId: 7
       responses:
         "201":
-          description: Предложение создано 
+          description: Предложение создано
         "400":
           description: Ошибка валидации
           content:
@@ -459,7 +458,7 @@ paths:
               - "1"
       responses:
         "200":
-          description: Обновлённая сущность offer 
+          description: Обновлённая сущность offer
         "401":
           description: Не авторизован
           content:
@@ -491,7 +490,7 @@ paths:
             type: string
       responses:
         "200":
-          description: Массив отзывов 
+          description: Массив отзывов
           content:
             application/json:
               schema:

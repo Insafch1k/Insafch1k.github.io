@@ -21,38 +21,34 @@ function App(): JSX.Element {
   }
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          path={AppRoute.Main}
-          element={<MainPage />}
-        />
-        <Route
-          path={AppRoute.Login}
-          element={<LoginPage />}
-        />
-        <Route
-          path={AppRoute.Favorites}
-          element={(
-            <PrivateRoute authorizationStatus={authorizationStatus}>
-              <FavoritesPage />
-            </PrivateRoute>
-          )}
-        />
-        <Route
-          path={`${AppRoute.Offer}/:id`}
-          element={<OfferPage />}
-        />
-        <Route
-          path={AppRoute.NotFound}
-          element={<NotFoundPage />}
-        />
-        <Route
-          path="*"
-          element={<NotFoundPage />}
-        />
-      </Routes>
-    </BrowserRouter>
+    <>
+      {/* SVG sprite is required on all pages (e.g. Favorites uses <use xlinkHref="#icon-bookmark">). */}
+      <div hidden>
+        <svg xmlns="http://www.w3.org/2000/svg">
+          <symbol id="icon-bookmark" viewBox="0 0 17 18">
+            <path d="M3.993 2.185l.017-.092V2c0-.554.449-1 .99-1h10c.522 0 .957.41.997.923l-2.736 14.59-4.814-2.407-.39-.195-.408.153L1.31 16.44 3.993 2.185z" />
+          </symbol>
+        </svg>
+      </div>
+
+      <BrowserRouter>
+        <Routes>
+          <Route path={AppRoute.Main} element={<MainPage />} />
+          <Route path={AppRoute.Login} element={<LoginPage />} />
+          <Route
+            path={AppRoute.Favorites}
+            element={(
+              <PrivateRoute authorizationStatus={authorizationStatus}>
+                <FavoritesPage />
+              </PrivateRoute>
+            )}
+          />
+          <Route path={`${AppRoute.Offer}/:id`} element={<OfferPage />} />
+          <Route path={AppRoute.NotFound} element={<NotFoundPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </BrowserRouter>
+    </>
   );
 }
 

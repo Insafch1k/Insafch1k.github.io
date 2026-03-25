@@ -2,12 +2,7 @@ openapi: 3.0.0
 info:
   title: Housing Rental API
   version: 1.0.0
-  description: >
-    REST API сервиса аренды жилья. Реальные пути совпадают с
-    Express-приложением.
-
-    Создание предложения — POST /offers (multipart). В методичке может
-    встречаться POST /offer — это то же по смыслу, фактический маршрут /offers.
+  description: API для работы с предложениями, отзывами и пользователями
 servers:
   - url: http://localhost:5000
 components:
@@ -94,7 +89,7 @@ components:
           maximum: 5
     OfferCard:
       type: object
-      description: Адаптированная карточка для списка (см. GET /offers)
+      description: Адаптированная карточка для списка
 tags:
   - name: Users
   - name: Offers
@@ -103,7 +98,7 @@ paths:
   /register:
     post:
       summary: Регистрация пользователя
-      description: multipart/form-data; avatar необязателен (по ТЗ).
+      description: multipart/form-data;
       tags:
         - Users
       requestBody:
@@ -167,8 +162,9 @@ paths:
             schema:
               $ref: "#/components/schemas/LoginBody"
             example:
-              email: Lyric14@gmail.com
-              password: _qO5mT6zLW
+              email: test@example.com
+              password: password123
+              
       responses:
         "200":
           description: Успешный вход, JWT и данные профиля
@@ -237,7 +233,6 @@ paths:
           required: false
           schema:
             type: string
-          description: Опционально заголовок Authorization Bearer JWT
       responses:
         "200":
           description: Массив карточек
@@ -255,9 +250,7 @@ paths:
                 $ref: "#/components/schemas/Error"
     post:
       summary: Создание нового предложения
-      description: |
-        multipart/form-data. Обязательно поле previewImage (файл).
-        Дополнительно до 6 файлов в поле photos.
+      description: multipart/form-data
       tags:
         - Offers
       security: []
@@ -348,29 +341,28 @@ paths:
               generated:
                 summary: Сгенерированный пример (только текстовые поля)
                 value:
-                  title: carbo custodia arbitro aranea iste ventus aurum accusator arca caries
-                    sonitus tergo alii caritas ull
-                  description: Colligo statim incidunt officiis soleo atque aeger vomito minus
-                    recusandae. Degusto adsum sustineo strenuus nostrum
-                    coadunatio studio delego. Natus numquam summa audeo vestrum
-                    voluptatem tunc. Talis depromo solitudo canis cubicularis
-                    barba clamo cresco verbera abutor. Ceno temptatio sufficio.
+                  title: comitatus tui utroque ater bibo benigne in repudiandae terror accusantium
+                    comes coma angulus adipisc
+                  description: Demergo subito ventosus praesentium ipsam. Ratione comitatus atque
+                    vorago civis possimus thorax vix. Antea utique repellendus
+                    debitis perferendis arbitro incidunt. Volup decet vulnus
+                    vesco tersus tenax vaco crur casus. Eius decet vir.
                   publishDate: 2026-03-24
-                  city: Amsterdam
+                  city: Cologne
                   isPremium: false
-                  rating: 1.7
-                  type: room
-                  rooms: 6
-                  guests: 4
-                  price: 9529
+                  rating: 4.7
+                  type: hotel
+                  rooms: 5
+                  guests: 8
+                  price: 9283
                   features: '["Breakfast","Air conditioning","Laptop friendly workspace"]'
-                  commentsCount: 41
-                  latitude: 2.9057
-                  longitude: 62.7681
-                  userId: 6
+                  commentsCount: 20
+                  latitude: 60.6362
+                  longitude: 107.1139
+                  userId: 7
       responses:
         "201":
-          description: Предложение создано (тело — модель из БД)
+          description: Предложение создано
         "400":
           description: Ошибка валидации
           content:
@@ -467,7 +459,7 @@ paths:
               - "1"
       responses:
         "200":
-          description: Обновлённая сущность offer (сырой ответ БД)
+          description: Обновлённая сущность offer
         "401":
           description: Не авторизован
           content:
@@ -499,7 +491,7 @@ paths:
             type: string
       responses:
         "200":
-          description: Массив отзывов (адаптированный DTO)
+          description: Массив отзывов
           content:
             application/json:
               schema:
