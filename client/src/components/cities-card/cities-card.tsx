@@ -5,6 +5,7 @@ import { OffersList } from '../../types/offer';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { toggleFavoriteAction } from '../../store/api-actions';
 import { AppRoute, AuthorizationStatus } from '../../const';
+import './cities-card.css';
 
 type CitiesCardProps = {
   offer: OffersList;
@@ -18,6 +19,8 @@ function CitiesCard({ offer, cardType = 'cities', onHover }: CitiesCardProps): J
   const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
   const { id, title, type, price, previewImage, isFavorite, isPremium, rating } = offer;
   const ratingWidth = Math.round(rating) * 20 + '%';
+  const previewWidth = cardType === 'favorites' ? 150 : 260;
+  const previewHeight = cardType === 'favorites' ? 110 : 200;
 
   const handleMouseEnter = () => {
     onHover?.(id);
@@ -49,7 +52,13 @@ function CitiesCard({ offer, cardType = 'cities', onHover }: CitiesCardProps): J
       )}
       <div className={`${cardType}__image-wrapper place-card__image-wrapper`}>
         <Link to={`${AppRoute.Offer}/${id}`}>
-          <img className="place-card__image" src={previewImage} width="260" height="200" alt="Place image" />
+          <img
+            className="place-card__image"
+            src={previewImage}
+            width={previewWidth}
+            height={previewHeight}
+            alt="Place image"
+          />
         </Link>
       </div>
       <div className="place-card__info">

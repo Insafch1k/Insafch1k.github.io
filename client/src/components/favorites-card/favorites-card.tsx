@@ -5,6 +5,7 @@ import { AppRoute, AuthorizationStatus } from '../../const';
 import { FullOffer } from '../../types/offer';
 import { toggleFavoriteAction } from '../../store/api-actions';
 import { useAppDispatch, useAppSelector } from '../../hooks';
+import './favorites-card.css';
 
 type FavoritesCardProps = {
   offer: FullOffer;

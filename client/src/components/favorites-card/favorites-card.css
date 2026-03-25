@@ -1,0 +1,13 @@
+.favorites__image-wrapper.place-card__image-wrapper {
+  width: 150px !important;
+  height: 110px !important;
+  overflow: hidden;
+}
+
+.favorites__image-wrapper.place-card__image-wrapper .place-card__image {
+  width: 150px !important;
+  height: 110px !important;
+  object-fit: cover;
+  display: block;
+}
+
